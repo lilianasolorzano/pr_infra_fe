@@ -1,55 +1,52 @@
 <template>
-<div>
-    <h1>tal vez no lo utilice asi que hay que checar para eliminarlo</h1>
-    <v-responsive max-width="500px" >
-        <v-text-field variante="outline" :rules="[rules.required]" @input="listenInput" v-model="inputValue">
-            <label for="">{{ props.title }}</label>
-        </v-text-field>
-
-    </v-responsive>
-</div>
+    <div>
+        <v-responsive max-width="500px">
+            <v-text-field :label="name" :type="type" :rules="[rules.required]" variant="outlined" v-model="inputValue"
+                @input="listenInput">
+                <label for="">{{ props.title }}</label>
+            </v-text-field>
+        </v-responsive>
+    </div>
 </template>
 
-<script lang="ts" setup>
-import {defineProps, ref, defineEmits, watch} from 'vue'
-
+<script setup lang="ts">
+import { defineProps, ref, defineEmits, watch } from 'vue'
 const props = defineProps({
-    title:{
-        type:String,
-        required: true
-    }, 
-    value:{
-        type:[String, Number],
-        required: false
+    title: {
+        type: String,
+        required: true,
     },
-    Placeholder:{
-        type:String,
-        required: false
-    }
+    value: {
+        type: [String, Number],
+        required: false,
+    },
+    name: String,
+    type: String,
 })
-const inputValue = ref(props.value)
-const emit = defineEmits()
-emit('update:value', inputValue)
 
-const listenInput = (event: Event) =>{
+const inputValue = ref(props.value)
+const emit = defineEmits();
+emit('update:value', inputValue.value)
+
+
+const listenInput = (event: Event) => {
     const newValue = (event.target as HTMLInputElement).value
 
     inputValue.value = newValue
-    emit('update: value', newValue)
+    emit('update:value', newValue)
 }
+
 watch(
-    ()=> props.value,
-    (newValue)=>{
+    () => props.value,
+    (newValue) => {
         inputValue.value = newValue
-})
+    }
+)
 
 const rules = {
-    required:value => !! value || 'campo requerido'
+    required: (value: string) => !!value || 'campo requerido'
 }
 
 </script>
 
-<style>
-
-
-</style>
+<style scoped></style>

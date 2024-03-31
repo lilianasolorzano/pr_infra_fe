@@ -1,126 +1,119 @@
 <template>
-        <h1>editar usuario normal</h1>
-        <form @submit.prevent="">
-        <div>
-            <label for="">nombre: {{ props.id }}</label>
-            <input type="text"  :v-model="props.id" placeholder="nombre de usuario" />
-        </div>
-        <!-- <div>
-            <label for="">email</label>
-            <input type="text"  :v-model="editedUser.email"/>
-        </div>
-        <div>
-          <label for="">role</label>
-          <input type="text" :v-model="editedUser.role"/>
-        </div> -->
-        <!-- <button @click="saveJSON">guardar cambios</button> -->
-    </form>
+    <h1>editar usuario normal</h1>
+
+    <input-global title="" name="user" :value="userID.user" @update:value="newValue => updateI('user', newValue)" />
+    <input-global title="" name="email" :value="userID.email" @update:value="newValue => updateI('email', newValue)" />
+    <input-global title="" name="role" :value="userID.role" @update:value="newValue => updateI('role', newValue)" />
+    <div>
+        <global-btn btn_global="actualizar" type="submit" @click="addEdit" />
+    </div>
+
 </template>
 
 <script setup lang="ts">
-import {  defineProps } from 'vue';
+import { usedataStore } from '../store/datoUsuario';
+import * as  API from 'aws-amplify/api';
+import { Amplify } from 'aws-amplify';
+import * as amplifyconfig from '../amplifyconfiguration.json';
+import { IdUsuario } from '../types/index';
+import { onMounted, ref } from 'vue';
+import { inputGlobal } from '../importFile';
+import { globalBtn } from '../importFile';
+import router from '../router/router';
 
-// const props = defineProps<{
-//   id: Number,
-//   userData: { id: String, name: String, email: String, role: String}// Datos del usuario recibidos como props
-// }>();
-// const props = defineProps<{
-//   id: Number,
-//   userData: { user: string}// Datos del usuario recibidos como props
-// }>();
+const dataStore = usedataStore()
 
-const props = defineProps([
-// user: string | number, 
-'id'
-//   userData: {
-//     user:string,
-//     email:string,
-//     role:string
-//   },
-//   columns: Array as () => {label:string, key:string} [],
-]);
+const props = defineProps(['id']);// Usuario seleccionado para edición
+const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '' });
 
-// const id = props.user
-// const editedUser = {...user}
+Amplify.configure(amplifyconfig);
 
-console.log('edit users', props.id)
-// console.log('edit', id)
-// const userId = props.user;
-// const userData = props.userData;
-// const userName = userData.user;
-// const userEmail = userData.email;
-// const userRole = userData.role;
-// import { usedataStore } from '../store/datoUsuario';
-// import * as  API  from 'aws-amplify/api';
-// import { Amplify } from 'aws-amplify';
-// import * as amplifyconfig from '../amplifyconfiguration.json';
-// import { IdUsuario } from '../types/index';
-// import { ref } from 'vue';
+async function getLogin() {
+    try {
+        const getUser = await API.get({
+            apiName: 'access_API',
+            path: `/dev/users/findById/${props.id}`,
+            options: {
+                body: {
+                    message: 'data'
+                }
+            }
+        });
+        console.log('dato', getUser)
+        const { body } = await getUser.response;
+        if (body) {
+            const data = await body.json() as { data?: void };
+            console.log('APPI', data);
+            userID.value = data.data as unknown as IdUsuario
+            console.log('idusers', userID.value)
+            dataStore.userEdit(userID.value)
+            // propsUsers.value.forEach((UserEdit) => {
+            //     dataStore.user(
+            //         UserEdit.id as (string),
+            //         UserEdit.user as (string),
+            //         UserEdit.email as (string),
+            //         UserEdit.role as (string))
+            // })
+        } else {
+            console.log('sin respuesta')
+        }
+        console.log('dataStore', dataStore.userGet.length)
 
-// // Datos de usuarios
-// const userEdit = ref<IdUsuario>({id:''});
-// const dataStore = usedataStore();
-// // Amplify.configure(amplifyconfig);
-// const usuarios = ref(dataStore.dataUsers);
+        // if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
+        //     userID.value = data.data as unknown as IdUsuario[];
+        //     dataStore.clearUserIds();
+        // propsUsers.value.forEach((userss) => {
+        //     dataStore.userEdit(
+        //         userss.email as (string),
+        //         userss.id as (string),
+        //         userss.role as (string),
+        //         userss.user as (string)
+        //     )
 
-// //   // Usuario seleccionado para edición
-// const UserEdit = ref <IdUsuario>({id: ''}) 
-// // const iddelete = ref ([])
-  
-//   // Método para editar un usuario
-// // const ElementEdit = (dataUsers) => {
-// // usuarioEditado.value = { ...dataUsers };
-// //   };
+        // });
+        //     console.log('datastore', dataStore.user.length)
+        // } else {
+        //     propsUsers.value = []
+        // }
+    } catch (error) {
+        console.log('sin obtener datos', error);
+        console.log('sin obtener datos')
 
-// //   const clickButton = (dataUsers) => {
-// //     // usuarioEditado.value = { ...dataUsers };
-// //     idEdit.value = {...dataUsers}
-// //     console.log('edicion de usuario',idEdit.value.id)
-// //   };
-  
-//   // Método para guardar cambios en el usuario editado
-//   const saveCambios = () => {
-//     // Encuentra y actualiza el usuario editado en la lista de usuarios
-//     const index = usuarios.value.findIndex(u => u.id === usuarioEditado.value.id);
-//   console.log(index)
+    } finally {
 
-//     if (index !== -1) {
-//     //   usuarios.value[index] = { ...usuarioEditado.value };
-//       usuarios.value[index] = { ...usuarioEditado.value};
-//     }
-//     // Reinicia el usuarioEditado después de guardar los cambios
-//     usuarioEditado.value = ''
-//   };
+    }
+};
+onMounted(getLogin)
 
+const saveJSON = async () => {
+    try {
+        const restOperation = API.put({
+            apiName: "access_API",
+            path: `/dev/users/update/${props.id}`,
+            options: {
+                body: userID.value
 
-//   const saveJSON = async () => {
-//     try {
-//                     const restOperation = API.put({
-//                       apiName: "access_API",
-//                       path: `/dev/users/update/${idEdit.value.id}`,
-//                       options: {
-//                         body: {
-//                             user: usuarioEditado.value
-//                         }
-//                       }
-//                     });
-//                     const response = await restOperation.response;
-//                     console.log('PUT call succeeded: ', response);
-//                     // if(response.statusCode === 200){
-//                     //     const responseData = await response.body.json()
-//                     //     console.log('datos actualizados', responseData)
-//                     //     return responseData
-//                     // }else{
-//                     //     console.error('error al actualizar', response.statusCode)
-//                     // }
-//                     // console.log()
-//                   } catch (error) {
-//                     console.log('PUT call failed: ', error);
-//                   }
-// };
+            }
+        });
+        const response = await restOperation.response;
+        console.log('PUT call succeeded: ', response);
+    } catch (error) {
+        console.log('PUT call failed: ', error);
+    }
+};
+
+const updateI = (fielName: string, value: string) => {
+    userID.value = { ...userID.value, [fielName]: value }
+    console.log('datos agregados', userID.value)
+}
+
+const addEdit = async (fielName: string, value: string) => {
+    updateI(fielName, value)
+    await saveJSON()
+    router.push('/Users')
+}
+
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

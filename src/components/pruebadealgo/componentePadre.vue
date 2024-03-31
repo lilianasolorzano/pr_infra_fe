@@ -1,40 +1,49 @@
 <template>
   <div>
-    <!-- Utiliza el componente de la tabla global y pasa las props necesarias -->
-    <table :columns="tableColumns" :data="tableData" :buttons="tableButtons" />
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" v-model="usuario.user">
+    <br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" v-model="usuario.email">
+    <br>
+    <button @click="guardarCambios">Guardar Cambios</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import table from './table.vue'; // Importa el componente de la tabla global
+import { ref } from 'vue';
+import { usedataStore } from '../../store/datoUsuario';
+import { IdUsuario } from '../../types/index';
 
-// Define las variables con los datos y configuraciones de la tabla
-const tableColumns = [
-  { key: 'id', label: 'ID' },
-  { key: 'name', label: 'Nombre' },
-  // Agrega más columnas según tus necesidades
-];
+// Suponiendo que dataStore es el objeto que contiene tus datos
+const dataStore = usedataStore()
+// Definir las props esperadas en el componente
+const props = defineProps(['id']);
 
-const tableData = [
-  { id: 1, name: 'Item 1' },
-  { id: 2, name: 'Item 2' },
-  // Agrega más datos según tus necesidades
-];
+// Simulación de datos (reemplaza esto con tu lógica real)
+const Idusers = ref<IdUsuario[]>([]); // Suponiendo que IdUsuario es el tipo de dato para los IDs de usuarios
+const usuarios = ref(dataStore.dataUsers);
 
-const tableButtons = [
-  { label: 'Editar', action: ()=> handleEdit },
-  { label: 'Eliminar', action: () => handleDelete },
-  // Agrega más botones y acciones según tus necesidades
-];
+// Definir el objeto 'usuario' para almacenar los datos del usuario seleccionado
+const usuario = ref({ id: '', user: '', email: '' });
 
-// Define las funciones para las acciones de los botones
-const handleEdit = (item) => {
-  console.log('Editar:', item);
-  // Lógica para editar el elemento
+// Método para obtener los datos del usuario por su ID
+const obtenerDatosUsuario = (id: string | number) => {
+  const usuarioEncontrado = usuarios.value.find(user => user.id === id);
+  if (usuarioEncontrado) {
+    usuario.value = { ...usuarioEncontrado };
+  } else {
+    // Manejar el caso en el que no se encuentre el usuario
+    console.error('Usuario no encontrado');
+  }
 };
 
-const handleDelete = (item) => {
-  console.log('Eliminar:', item);
-  // Lógica para eliminar el elemento
+// Llamar a obtenerDatosUsuario con el ID de la prop 'id' (pasada desde el componente padre)
+obtenerDatosUsuario(props.id); // props.id contiene el ID del usuario seleccionado
+
+// Método para guardar cambios
+const guardarCambios = () => {
+  // Aquí puedes implementar la lógica para guardar los cambios del usuario
+  console.log('Cambios guardados:', usuario.value);
 };
 </script>
