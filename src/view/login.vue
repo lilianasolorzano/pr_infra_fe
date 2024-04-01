@@ -71,9 +71,19 @@ const handleLogin = async () => {
         });
         const responsData = await respose.response
         if (responsData.statusCode === 200) {
-            dataStore.setLoggedIn()
-            await responsData.body.json();
-            await router.push('/Home')
+            const data = await responsData.body.json();
+
+            const role = data?.data?.userDTO?.role
+
+            dataStore.setLoggedIn(role)
+            console.log("auth, login", role)
+
+            if (role === 'ADMIN') {
+                await router.push('/Home')
+            } else {
+                await router.push('/clientView');
+            }
+
             return true
 
         } else {

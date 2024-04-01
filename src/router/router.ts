@@ -13,46 +13,52 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/Home',
     name: 'home',
-    meta: { requiresAuth: true, showNavbar: true },
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
     component: () => import('../view/home.vue'),
   },
   {
     path: '/users',
     name: 'usuarios',
-    meta: { requiresAuth: true, showNavbar: true },
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
     component: () => import('../view/adminView/usuarios.vue')
   },
   {
     path: '/credentials',
     name: 'credentialsTableAdmin',
-    meta: { requiresAuth: true, showNavbar: true },
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
 
     component: () => import('../view/adminView/credentialsTableAdmin.vue'),
   },
   {
     path: '/edit/:id',
     name: 'editar',
-    meta: { requiresAuth: true, showNavbar: true },
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
     component: () => import('../components/editar.vue'),
     props: true
   },
   {
     path: '/agregar',
     name: 'addNewUser',
-    meta: { requiresAuth: true, showNavbar: true },
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
     component: () => import('../view/adminView/addNewUser.vue'),
   },
   {
     path: '/agregarCredencial',
     name: 'credentialRegister',
-    meta: { requiresAuth: true, showNavbar: true },
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
     component: () => import('../view/adminView/credentialRegister.vue')
   },
   {
     path: '/credentialCreate',
     name: 'credentialCreate',
-    meta: { requiresAuth: true, showNavbar: true },
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
     component: () => import('../view/adminView/credentialsCreate.vue')
+  },
+  {
+    path: '/clientView',
+    name: 'client',
+    meta: { requiresUser: true, requiresAuth: true, showNavbar: true, role: 'INVITADO' },
+    component: () => import('../view/clientView/credentialsClient.vue')
   },
   {
     path: '/:catchAll(.*)',
@@ -75,12 +81,30 @@ router.beforeEach((to, from, next) => {
 
   const dataStore = usedataStore();
   const isLoggedInValue = dataStore.isLoggedIn;
+  const isRole = dataStore.role
   console.log("Valor de la variable en router.ts", isLoggedInValue)
-  if (to.meta.requiresAuth && !isLoggedInValue) {
-    next({ name: 'Forbidden' });
-  } else {
-    next();
-  }
+  console.log("Valor de la variable en role", isRole)
+
+  // if (to.meta.requiresAuth && !isLoggedInValue) {
+  //   next({ name: 'Forbidden' });
+  // } else if (to.meta.requiresAdmin && isRole !== 'ADMIN') {
+  //   next({ name: 'Forbidden' });
+  // } else if (to.meta.requiresUser && isRole !== 'INVITADO') {
+  //   next({ name: 'Forbidden' });
+  // } else {
+  //   next()
+  // }
+
+
+  const isAuthorized =
+    (!to.meta.requiresAuth || isLoggedInValue) &&
+    (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
+    (!to.meta.requiresUser || isRole === 'INVITADO');
+
+  // Redirige al usuario a la página Forbidden si no está autorizado
+  isAuthorized ? next() : next({ name: 'Forbidden' });
+
+
 });
 
 export default router;

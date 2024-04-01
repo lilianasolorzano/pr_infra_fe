@@ -6,7 +6,6 @@ export const usedataStore = defineStore({
     state: () => ({
         // logeo de usuario 
         usuario: null,
-        rol: null,
         // datos de usuario 
         dataUsers: [{
             id: '',
@@ -37,6 +36,7 @@ export const usedataStore = defineStore({
         }],
         // isLoggedIn: false
         isLoggedIn: Cookies.get('isLoggedIn') === 'true' || false,
+        role: Cookies.get('role') || '',
         // isLoggedIn: getCookie('isLoggedIn') === 'true' || false,
         //    logeo de usuario 
         //    usuario: null,
@@ -114,18 +114,24 @@ export const usedataStore = defineStore({
         setUsuario(usuario: null) {
             this.usuario = usuario
         },
+
         setRol(rol: null) {
             this.rol = rol;
         },
 
-        setLoggedIn() {
+        setLoggedIn(role: string) {
             // this.isLoggedIn = isLoggedIn
             this.isLoggedIn = true;
+            if (role) {
+                this.role = role;
+                Cookies.set('role', role, { expires: 1 });
+            }
             Cookies.set('isLoggedIn', 'true', { expires: 1 });
         },
 
         logout() {
             this.isLoggedIn = false;
+            this.role = ''
             Cookies.remove('isLoggedIn');
         },
 
