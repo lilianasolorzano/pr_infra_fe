@@ -7,36 +7,37 @@ export const usedataStore = defineStore({
         usuario: null,
         rol: null,
         // datos de usuario 
-        dataUsers:[{
-            id:'',
-            user:'',
+        dataUsers: [{
+            id: '',
+            user: '',
             email: '',
-            password:'',
-            role:'',
+            password: '',
+            role: '',
         }],
         // editar usuario, obtener solo el usuario a editar
         dataEditID: [] as IdUsuario[],
-         
+
         // datos de usuario IAM    
-             dataUsersIAM:[{
-                UserId:'',
-                UserName:'',
-                accessKeyId:'',
-                CreateDate:'',
-                Status:'',
-                ExpirationDate:'',
+        dataUsersIAM: [{
+            UserId: '',
+            UserName: '',
+            accessKeyId: '',
+            CreateDate: '',
+            Status: '',
+            ExpirationDate: '',
         }],
-            //  registrar dato de usuario IAM 
-               dataIAM: [{
-                UserId:'',
-                UserName:'',
-                accessKeyId:'',
-                secretKey:'',
-                date:'',
-        }]
+        //  registrar dato de usuario IAM 
+        dataIAM: [{
+            UserId: '',
+            UserName: '',
+            accessKeyId: '',
+            secretKey: '',
+            date: '',
+        }],
+        isLoggedIn: false
         //    logeo de usuario 
-            //    usuario: null,
-            //    rol: null,
+        //    usuario: null,
+        //    rol: null,
     }),
     actions: {
         // almacenar dato del JSON 
@@ -84,22 +85,21 @@ export const usedataStore = defineStore({
         },
 
         // registrar los usuarios IAM 
-          registCredentialIAM(UserName: string, UserId: string, accessKeyId: string, secretKey: string, date: string )
-            {
-                    this.dataIAM.push({
-                            UserId,
-                            UserName,
-                            accessKeyId,
-                            secretKey,
-                            date,
-                        
-                    })
-                    // console.error('dato erroneo', UserName)
-                       
+        registCredentialIAM(UserName: string, UserId: string, accessKeyId: string, secretKey: string, date: string) {
+            this.dataIAM.push({
+                UserId,
+                UserName,
+                accessKeyId,
+                secretKey,
+                date,
+
+            })
+            // console.error('dato erroneo', UserName)
+
         },
         //   guardar datos de nuevas credenciales 
-           saveDataIAM(inputEvent) {
-                this.dataIAM.push(inputEvent)
+        saveDataIAM(inputEvent) {
+            this.dataIAM.push(inputEvent)
         },
         iniciarSesion(usuario: null) {
             // checar dataUser , puedo que se camibie por datosUsuario 
@@ -113,8 +113,11 @@ export const usedataStore = defineStore({
         },
         setRol(rol: null) {
             this.rol = rol;
+        },
+
+        setLoggedIn(isLoggedIn: boolean) {
+            this.isLoggedIn = isLoggedIn
         }
-    
 
     },
 

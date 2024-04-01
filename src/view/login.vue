@@ -23,7 +23,7 @@ import { inicioSesion } from '../types';
 import * as API from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
 import * as amplifyconfig from '../amplifyconfiguration.json'
-
+import { usedataStore } from '../store/datoUsuario';
 // import { required, email } from 'vuelidate/lib/validators';
 
 // const validations = {
@@ -32,6 +32,7 @@ import * as amplifyconfig from '../amplifyconfiguration.json'
 //     password: { required }
 // };
 Amplify.configure(amplifyconfig)
+const dataStore = usedataStore()
 // let ResultBody: inicioSesion | null = null
 // const dataStore = usedataStore()
 const loginDetails = ref<inicioSesion>({
@@ -45,6 +46,8 @@ const loginDetails = ref<inicioSesion>({
 const errorMessages = ref('')
 
 const router = useRouter()
+// const isLoggedIn = ref(false)
+// console.log("variable del login", isLoggedIn)
 
 // const usuarioAutenticado = ref()
 
@@ -53,7 +56,6 @@ const handleLogin = async () => {
     console.log('hashedpassword', hashedPassword)
     const passwordMatch = bcrypt.compareSync(loginDetails.value.password, hashedPassword)
     console.log('passwordMatch', passwordMatch)
-
 
     const authenticated = false
     console.log('tratando de enviar a otra pagina', authenticated)
@@ -69,11 +71,19 @@ const handleLogin = async () => {
         });
         const responsData = await respose.response
         if (responsData.statusCode === 200) {
+            // isLoggedIn.value = true
+            dataStore.setLoggedIn(true)
+            localStorage.setItem('isLoggedIn', 'true')
             await responsData.body.json();
+            // console.log(data)
             await router.push('/Home')
             // return ResultBody
             return true
 
+        } else {
+            // isLoggedIn.value = false
+            dataStore.setLoggedIn(false)
+            return false
         }
 
     } catch (errorMessages) {
@@ -92,18 +102,16 @@ const updateI = (fielName: string, value: string) => {
     console.log('datos agregados', loginDetails.value)
 }
 
-
-// onMounted(async () => {
-//     try {
-//         const usuario = await handleLogin()
-//         usuarioAutenticado.value = usuario
-//     } catch {
-
-//     }
-// })
-
-// export { usuarioAutenticado }
-
 </script>
+
+
+<!-- <script lang="ts">
+// import { ref } from 'vue';
+// import { useRouter } from 'vue-router';
+
+// Exporta las variables y funciones necesarias para que estén disponibles fuera del componente
+export const isLoggedIn = ref(false);
+export const router = useRouter();
+</script> -->
 
 <style scoped></style>
