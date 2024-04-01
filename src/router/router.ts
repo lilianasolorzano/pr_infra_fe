@@ -98,6 +98,7 @@ router.beforeEach((to, from, next) => {
 
   const isAuthorized =
     (!to.meta.requiresAuth || isLoggedInValue) &&
+    // (!to.name || isLoggedInValue) &&
     (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
     (!to.meta.requiresUser || isRole === 'INVITADO');
 

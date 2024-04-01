@@ -19,7 +19,7 @@ import * as bcrypt from 'bcryptjs'
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 // import { usedataStore } from '../store/datoUsuario';
-import { inicioSesion } from '../types';
+import { inicioSesion, UserData } from '../types';
 import * as API from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
 import * as amplifyconfig from '../amplifyconfiguration.json'
@@ -60,6 +60,9 @@ const handleLogin = async () => {
     const authenticated = false
     console.log('tratando de enviar a otra pagina', authenticated)
 
+    let data: UserData | null = null;
+
+
     try {
 
         const respose = await API.post({
@@ -71,20 +74,40 @@ const handleLogin = async () => {
         });
         const responsData = await respose.response
         if (responsData.statusCode === 200) {
-            const data = await responsData.body.json();
+            const jsonData = await responsData.body.json();
+            if (typeof jsonData === 'object' && jsonData !== null) {
+                data = jsonData as unknown as UserData;
+                const role = data?.data?.userDTO?.role
 
-            const role = data?.data?.userDTO?.role
+                dataStore.setLoggedIn(role)
+                console.log("auth, login", role)
 
-            dataStore.setLoggedIn(role)
-            console.log("auth, login", role)
+                const roleRoutes = {
+                    'ADMIN': '/Home',
+                    'INVITADO': '/clientView'
+                };
 
-            if (role === 'ADMIN') {
-                await router.push('/Home')
+                const route = roleRoutes[role as keyof typeof roleRoutes];
+                if (route) {
+                    await router.push(route);
+                    return true;
+                } else {
+                    console.error('Rol desconocido:', role);
+                    await router.push('/');
+                    return false;
+                }
+
+                /* if (role === 'ADMIN') {
+                    await router.push('/Home')
+                } else {
+                    await router.push('/clientView');
+                }
+
+                return true */
             } else {
-                await router.push('/clientView');
+                console.error('Los datos no son un objeto JSON válido:', jsonData);
             }
 
-            return true
 
         } else {
             return false
