@@ -71,14 +71,12 @@ const handleLogin = async () => {
         });
         const responsData = await respose.response
         if (responsData.statusCode === 200) {
-            // isLoggedIn.value = true
             dataStore.setLoggedIn()
             await responsData.body.json();
             await router.push('/Home')
             return true
 
         } else {
-            // dataStore.setLoggedIn(false)
             return false
         }
 
@@ -89,25 +87,11 @@ const handleLogin = async () => {
     }
 };
 
-// function obtenerUsuarioAutenticado(): inicioSesion | null {
-//     return loginDetails.value; // Devuelve la información del usuario autenticado o null si no hay sesión activa
-// }
-
 const updateI = (fielName: string, value: string) => {
     loginDetails.value = { ...loginDetails.value, [fielName]: value }
     console.log('datos agregados', loginDetails.value)
 }
 
 </script>
-
-
-<!-- <script lang="ts">
-// import { ref } from 'vue';
-// import { useRouter } from 'vue-router';
-
-// Exporta las variables y funciones necesarias para que estén disponibles fuera del componente
-export const isLoggedIn = ref(false);
-export const router = useRouter();
-</script> -->
 
 <style scoped></style>

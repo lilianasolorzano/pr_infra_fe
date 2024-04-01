@@ -122,7 +122,12 @@ export const usedataStore = defineStore({
             // this.isLoggedIn = isLoggedIn
             this.isLoggedIn = true;
             Cookies.set('isLoggedIn', 'true', { expires: 1 });
-        }
+        },
+
+        logout() {
+            this.isLoggedIn = false;
+            Cookies.remove('isLoggedIn');
+        },
 
     },
 
