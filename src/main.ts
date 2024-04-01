@@ -13,16 +13,8 @@ const vuetify = createVuetify({
   directives,
 });
 
-
-const pinia = createPinia()
-
-// const sessionData = localStorage.getItem('sessionData');
-// if (sessionData) {
-//   pinia.state.value = JSON.parse(sessionData);
-// }
-
 createApp(App)
-  .use(pinia)
+  .use(createPinia())
   .use(routes)
   .use(vuetify)
   .mount('#app');

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { IdUsuario } from '../types';
+import Cookies from 'js-cookie'
 export const usedataStore = defineStore({
     id: 'datos',
     state: () => ({
@@ -34,7 +35,9 @@ export const usedataStore = defineStore({
             secretKey: '',
             date: '',
         }],
-        isLoggedIn: false
+        // isLoggedIn: false
+        isLoggedIn: Cookies.get('isLoggedIn') === 'true' || false,
+        // isLoggedIn: getCookie('isLoggedIn') === 'true' || false,
         //    logeo de usuario 
         //    usuario: null,
         //    rol: null,
@@ -115,8 +118,10 @@ export const usedataStore = defineStore({
             this.rol = rol;
         },
 
-        setLoggedIn(isLoggedIn: boolean) {
-            this.isLoggedIn = isLoggedIn
+        setLoggedIn() {
+            // this.isLoggedIn = isLoggedIn
+            this.isLoggedIn = true;
+            Cookies.set('isLoggedIn', 'true', { expires: 1 });
         }
 
     },

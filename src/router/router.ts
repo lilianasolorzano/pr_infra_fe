@@ -9,78 +9,81 @@ import { usedataStore } from '../store/datoUsuario';
 // const { handleLogin } = login
 
 const routes: RouteRecordRaw[] = [
-    {
-        path: '/',
-        name: 'login',
-        component: login,
-    },
-    {
-        path: '/Home',
-        name: 'home',
-        meta: { requiresAuth: true },
-        component: () => import('../view/home.vue'),
-    },
-    {
-        path: '/users',
-        name: 'usuarios',
-        meta: { requiresAuth: true },
-        component: () => import('../view/adminView/usuarios.vue')
-    },
-    {
-        path: '/credentials',
-        name: 'credentialsTableAdmin',
-        meta: { requiresAuth: true },
+  {
+    path: '/',
+    name: 'login',
+    component: login,
+  },
+  {
+    path: '/Home',
+    name: 'home',
+    meta: { requiresAuth: true },
+    component: () => import('../view/home.vue'),
+  },
+  {
+    path: '/users',
+    name: 'usuarios',
+    meta: { requiresAuth: true },
+    component: () => import('../view/adminView/usuarios.vue')
+  },
+  {
+    path: '/credentials',
+    name: 'credentialsTableAdmin',
+    meta: { requiresAuth: true },
 
-        component: () => import('../view/adminView/credentialsTableAdmin.vue'),
-    },
-    {
-        path: '/edit/:id',
-        name: 'editar',
-        meta: { requiresAuth: true },
-        component: () => import('../components/editar.vue'),
-        props: true
-    },
-    {
-        path: '/agregar',
-        name: 'addNewUser',
-        meta: { requiresAuth: true },
-        component: () => import('../view/adminView/addNewUser.vue'),
-    },
-    {
-        path: '/agregarCredencial',
-        name: 'credentialRegister',
-        meta: { requiresAuth: true },
-        component: () => import('../view/adminView/credentialRegister.vue')
-    },
-    {
-        path: '/credentialCreate',
-        name: 'credentialCreate',
-        meta: { requiresAuth: true },
-        component: () => import('../view/adminView/credentialsCreate.vue')
-    }
+    component: () => import('../view/adminView/credentialsTableAdmin.vue'),
+  },
+  {
+    path: '/edit/:id',
+    name: 'editar',
+    meta: { requiresAuth: true },
+    component: () => import('../components/editar.vue'),
+    props: true
+  },
+  {
+    path: '/agregar',
+    name: 'addNewUser',
+    meta: { requiresAuth: true },
+    component: () => import('../view/adminView/addNewUser.vue'),
+  },
+  {
+    path: '/agregarCredencial',
+    name: 'credentialRegister',
+    meta: { requiresAuth: true },
+    component: () => import('../view/adminView/credentialRegister.vue')
+  },
+  {
+    path: '/credentialCreate',
+    name: 'credentialCreate',
+    meta: { requiresAuth: true },
+    component: () => import('../view/adminView/credentialsCreate.vue')
+  }
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes,
 });
 
 router.beforeEach((to, from, next) => {
 
-    const dataStore = usedataStore();
+  const dataStore = usedataStore();
 
-    // const isLoggedInValue = false; // Aquí debes implementar la lógica para verificar si el usuario está autenticado
-    const isLoggedInValue = dataStore.isLoggedIn;
-    localStorage.setItem('isLoggedInValue', JSON.stringify(isLoggedInValue));
-    console.log("Valor de la variable en router.ts", isLoggedInValue)
-    // Verificar si la ruta requiere autenticación y el usuario no está autenticado
-    if (to.meta.requiresAuth && !isLoggedInValue) {
-        // Redirigir al usuario a la página de inicio de sesión
-        next({ name: 'login' });
-    } else {
-        next();
-        // Permitir el acceso a la ruta
-    }
+  // const isLoggedInValue = false; // Aquí debes implementar la lógica para verificar si el usuario está autenticado
+  const isLoggedInValue = dataStore.isLoggedIn;
+  // localStorage.setItem('isLoggedInValue', isLoggedInValue.toString());
+  // const datas = localStorage.getItem('isLoggedInValue')
+  // const isLogged = datas === 'true'
+
+  console.log("Valor de la variable en router.ts", isLoggedInValue)
+  // Verificar si la ruta requiere autenticación y el usuario no está autenticado
+  if (to.meta.requiresAuth && !isLoggedInValue) {
+    // Redirigir al usuario a la página de inicio de sesión
+    next({ name: 'login' });
+  } else {
+    next();
+    // Permitir el acceso a la ruta
+  }
 });
 
 export default router;

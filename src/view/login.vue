@@ -72,17 +72,13 @@ const handleLogin = async () => {
         const responsData = await respose.response
         if (responsData.statusCode === 200) {
             // isLoggedIn.value = true
-            dataStore.setLoggedIn(true)
-            localStorage.setItem('isLoggedIn', 'true')
+            dataStore.setLoggedIn()
             await responsData.body.json();
-            // console.log(data)
             await router.push('/Home')
-            // return ResultBody
             return true
 
         } else {
-            // isLoggedIn.value = false
-            dataStore.setLoggedIn(false)
+            // dataStore.setLoggedIn(false)
             return false
         }
 
