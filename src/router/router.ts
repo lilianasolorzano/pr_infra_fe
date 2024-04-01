@@ -77,7 +77,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
 
   const dataStore = usedataStore();
   const isLoggedInValue = dataStore.isLoggedIn;
@@ -85,26 +85,44 @@ router.beforeEach((to, from, next) => {
   console.log("Valor de la variable en router.ts", isLoggedInValue)
   console.log("Valor de la variable en role", isRole)
 
-  // if (to.meta.requiresAuth && !isLoggedInValue) {
-  //   next({ name: 'Forbidden' });
-  // } else if (to.meta.requiresAdmin && isRole !== 'ADMIN') {
-  //   next({ name: 'Forbidden' });
-  // } else if (to.meta.requiresUser && isRole !== 'INVITADO') {
-  //   next({ name: 'Forbidden' });
-  // } else {
-  //   next()
-  // }
+  /*  const isAuthorized =
+     (!to.meta.requiresAuth || isLoggedInValue) &&
+     (!to.name || isLoggedInValue) &&
+     (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
+     (!to.meta.requiresUser || isRole === 'INVITADO');
+ 
+   // Redirige al usuario a la página Forbidden si no está autorizado
+   isAuthorized ? next() : next({ name: 'Forbidden' }); */
 
+  type RolePaths = {
+    ADMIN: string;
+    INVITADO: string;
+  };
+  const roleRedirect = {
+    'ADMIN': '/Home',
+    'INVITADO': '/clientView',
+  };
 
-  const isAuthorized =
-    (!to.meta.requiresAuth || isLoggedInValue) &&
-    // (!to.name || isLoggedInValue) &&
-    (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
-    (!to.meta.requiresUser || isRole === 'INVITADO');
+  // Verificar si la ruta actual es la de Login
+  if (to.path === '/' && isLoggedInValue) {
+    // Redirige al usuario a su página de inicio basada en el rol
+    const redirectPath = roleRedirect[isRole as keyof RolePaths] || '/';
+    return next({ path: redirectPath });
+  }
 
-  // Redirige al usuario a la página Forbidden si no está autorizado
-  isAuthorized ? next() : next({ name: 'Forbidden' });
+  // Verificar si la ruta requiere autenticación y el usuario no está logueado
+  if (to.meta.requiresAuth && !isLoggedInValue) {
+    // Redirige al usuario a la página de login
+    return next({ path: '/forbidden' });
+  }
 
+  // Para rutas que requieren un rol específico
+  if (to.meta.role && to.meta.role !== isRole && isLoggedInValue) {
+    // Redirige al usuario a una página de "Acceso Denegado" o similar
+    return next({ path: '/forbidden' });
+  }
+
+  next();
 
 });
 
