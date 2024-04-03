@@ -18,38 +18,23 @@ import { globalBtn } from '../importFile';
 import * as bcrypt from 'bcryptjs'
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-// import { usedataStore } from '../store/datoUsuario';
 import { inicioSesion, UserData } from '../types';
 import * as API from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
 import * as amplifyconfig from '../amplifyconfiguration.json'
 import { usedataStore } from '../store/datoUsuario';
-// import { required, email } from 'vuelidate/lib/validators';
 
-// const validations = {
-//     nombre: { required },
-//     email: { required, email },
-//     password: { required }
-// };
 Amplify.configure(amplifyconfig)
 const dataStore = usedataStore()
-// let ResultBody: inicioSesion | null = null
-// const dataStore = usedataStore()
+
 const loginDetails = ref<inicioSesion>({
     user: '',
     password: '',
 })
-// validar los roles de usuarios 
-// const iniciarSesion = () => {
-//     dataStore.$patch('iniciarSesion', loginDetails);
-// };
+
 const errorMessages = ref('')
 
 const router = useRouter()
-// const isLoggedIn = ref(false)
-// console.log("variable del login", isLoggedIn)
-
-// const usuarioAutenticado = ref()
 
 const handleLogin = async () => {
     const hashedPassword = bcrypt.hashSync('password', 10)
@@ -61,7 +46,6 @@ const handleLogin = async () => {
     console.log('tratando de enviar a otra pagina', authenticated)
 
     let data: UserData | null = null;
-
 
     try {
 
@@ -96,14 +80,6 @@ const handleLogin = async () => {
                     await router.push('/');
                     return false;
                 }
-
-                /* if (role === 'ADMIN') {
-                    await router.push('/Home')
-                } else {
-                    await router.push('/clientView');
-                }
-
-                return true */
             } else {
                 console.error('Los datos no son un objeto JSON válido:', jsonData);
             }
