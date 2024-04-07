@@ -1,13 +1,48 @@
 <template>
-  <H1>Usuarios</H1>
-  <router-link to="/agregar">
-    <global-btn btn_global="Agregar usuario" buttonClass="" />
-  </router-link>
+  <v-alert v-if="mensaje" type="success" dismissible>
+    {{ mensaje }}
+  </v-alert>
+  <h1 class="textUser">Usuarios</h1>
+  <global-btn btn_global="Agregar usuario" buttonClass="styleBUser" dark @click="dialog = true" />
   <div>
     <tablegbl :columns="columns" :data="dataTable" :showButtonEditar="true" :showButtonEliminar="true"
-      :showButtonVisualize="true" @deleteUser="handleDeleteJSON" @editUser="handleEdit"
-      @visualizeUser="handleVisualize" />
+      :showButtonVisualize="true" @deleteUser="handleDeleteJSON" @editUser="handleEdit" @visualizeUser="handleVisualize"
+      class="padding" />
   </div>
+
+  <!-- Ventana modal -->
+  <form @submit.prevent="AddnewUser">
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title>Agregar Nueva Credencial</v-card-title>
+        <v-card-text>
+          <div>
+            <input-global title="" type="text" id="UserName" v-model="UsuarioAgr.user"
+              @update:value="newValue => updateI('user', newValue)" name="nombre de usuario" />
+          </div>
+          <div>
+            <input-global title="" type="email" id="UserEmail" v-model="UsuarioAgr.email"
+              @update:value="newValue => updateI('email', newValue)" name="email" />
+          </div>
+          <div>
+            <input-global title="" type="password" id="password" v-model="UsuarioAgr.password"
+              @update:value="newValue => updateI('password', newValue)" name="password" />
+          </div>
+          <div>
+            <!-- <UserRol type="text" id="UserRol" v-model="UsuarioAgr.role" /> -->
+            <v-select title="" id="UserRol" :items="['admin', 'invitado']" v-model="selectedOption" />
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary">
+            <global-btn btn_global="Regitrar" :stop-event="true" @click="createUser" />
+          </v-btn>
+          <!-- <v-btn color="primary" @click="agregarCredencial">Guardar</v-btn> -->
+          <v-btn @click="dialog = false">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </form>
 </template>
 
 
@@ -21,6 +56,8 @@ import { IdUsuario } from '../../types/index';
 import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
 import router from '../../router/router';
+import { inputGlobal } from '../../importFile';
+
 
 
 Amplify.configure(amplifyconfig);
@@ -80,10 +117,10 @@ const dataTable = computed(() => dataStore.dataUsers);
 
 
 // editar usuario 
-const handleEdit = (Idusers: string) => {
-  const user = idUsers.value.find(user => user.id === Idusers)
+const handleEdit = (id: string) => {
+  const user = idUsers.value.find(user => user.id === id)
 
-  if (Idusers) {
+  if (id) {
     router.push({
       name: 'editar',
       params: {
@@ -130,4 +167,94 @@ async function handleDeleteJSON(Idusers: string | number) {
   }
 };
 
+
+// ventana modal de agregar usuario IAM 
+const dialog = ref(false);
+const mensaje = ref('');
+const selectedOption = ref('select...');
+const UsuarioAgr = ref<IdUsuario>({
+  id: '',
+  user: '',
+  email: '',
+  password: '',
+  role: '',
+});
+
+const createUser = async () => {
+  try {
+    await API.post({
+      apiName: 'access_API',
+      path: '/dev/users/create',
+      options: {
+        body: {
+          user: UsuarioAgr.value.user as string,
+          email: UsuarioAgr.value.email as string,
+          password: UsuarioAgr.value.password as string,
+          role: selectedOption.value
+        }
+      }
+    });
+    console.log('Credencial agregada');
+    mensaje.value = 'Usuario agregado exitosamente';
+    dialog.value = false;
+
+  } catch (error) {
+    console.log('create call failed: ', error);
+
+  } finally {
+
+  }
+};
+const updateI = (fielName: string, value: string) => {
+  UsuarioAgr.value = { ...UsuarioAgr.value, [fielName]: value }
+  console.log('datos agregados', UsuarioAgr.value)
+}
+
+// enviar los datos del formulario a mi store 
+function AddnewUser() {
+  dataStore.saveData({
+    user: UsuarioAgr.value.user,
+    email: UsuarioAgr.value.email,
+    password: UsuarioAgr.value.password,
+    role: UsuarioAgr.value.role,
+  })
+  console.log(UsuarioAgr.value.user || '')
+  // console.log(UsuarioAgr.value.user)  
+  console.log(UsuarioAgr.value.email)
+  console.log(UsuarioAgr.value.password)
+  console.log(UsuarioAgr.value.role)
+};
 </script>
+
+
+
+
+<style>
+.styleBUser {
+  background-color: #145474;
+  font-size: 13px;
+  /* text-decoration: underline; */
+  color: white;
+  /* border: 2px solid black; */
+  border-radius: 10px;
+  height: 40px;
+  width: 140px;
+  text-decoration: none;
+  /* padding: 10px;
+  padding-bottom: 10px; */
+  position: relative;
+  margin-left: 5%;
+  margin-top: 50px;
+}
+
+.textUser {
+  /* background-image: url("../../../public/img/istockphoto-1130707008-612x612.jpg"); */
+  /* background-size: cover;
+  background-clip: text; */
+  /* -webkit-background-clip: text; */
+  display: flex;
+  /* color: white; */
+  margin-left: 5%;
+  margin-top: 40px;
+}
+</style>

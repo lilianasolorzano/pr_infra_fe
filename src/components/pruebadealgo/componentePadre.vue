@@ -1,49 +1,55 @@
 <template>
-  <div>
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" v-model="usuario.user">
-    <br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" v-model="usuario.email">
-    <br>
-    <button @click="guardarCambios">Guardar Cambios</button>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>UserName</th>
+        <th>Credential Name</th>
+        <!-- Otras columnas según tus datos -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(user, index) in groupedData" :key="index">
+        <!-- <td>{{ user.UserName }}</td> -->
+        <td>{{ user.iam_user_name }}</td>
+        <!-- Otras celdas según tus datos -->
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
-import { IdUsuario } from '../../types/index';
 
-// Suponiendo que dataStore es el objeto que contiene tus datos
+import { secretUserIAM } from '../../types'; // Importa la interfaz SecretUserIAM
+
+
 const dataStore = usedataStore()
-// Definir las props esperadas en el componente
-const props = defineProps(['id']);
 
-// Simulación de datos (reemplaza esto con tu lógica real)
-const Idusers = ref<IdUsuario[]>([]); // Suponiendo que IdUsuario es el tipo de dato para los IDs de usuarios
-const usuarios = ref(dataStore.dataUsers);
+// Propiedad computada para obtener los datos de secretUserIAM desde el store
+const secretUserIAM = computed(() => dataStore.dataSecretIAM);
 
-// Definir el objeto 'usuario' para almacenar los datos del usuario seleccionado
-const usuario = ref({ id: '', user: '', email: '' });
+// Función para agrupar los datos de acuerdo con el campo UserName
+const groupDataByUserName = () => {
+  const groupedData: secretUserIAM[] = [];
 
-// Método para obtener los datos del usuario por su ID
-const obtenerDatosUsuario = (id: string | number) => {
-  const usuarioEncontrado = usuarios.value.find(user => user.id === id);
-  if (usuarioEncontrado) {
-    usuario.value = { ...usuarioEncontrado };
-  } else {
-    // Manejar el caso en el que no se encuentre el usuario
-    console.error('Usuario no encontrado');
-  }
+  secretUserIAM.value.forEach((item: secretUserIAM) => {
+    const existingUser = groupedData.find(user => user.iam_user_name === item.iam_user_name);
+    if (existingUser) {
+      existingUser.iam_user_name.push(item.iam_user_name);
+      // Agrega otros campos según tu interfaz SecretUserIAM
+    } else {
+      groupedData.push({
+        UserName: item.iam_user_name,
+        CredentialName: [item.iam_user_name],
+        // Agrega otros campos según tu interfaz SecretUserIAM
+      });
+    }
+  });
+
+  return groupedData;
 };
 
-// Llamar a obtenerDatosUsuario con el ID de la prop 'id' (pasada desde el componente padre)
-obtenerDatosUsuario(props.id); // props.id contiene el ID del usuario seleccionado
-
-// Método para guardar cambios
-const guardarCambios = () => {
-  // Aquí puedes implementar la lógica para guardar los cambios del usuario
-  console.log('Cambios guardados:', usuario.value);
-};
+// Propiedad computada para obtener los datos agrupados por UserName
+const groupedData = computed(groupDataByUserName);
 </script>

@@ -1,9 +1,11 @@
 <template>
     <h1>editar usuario normal</h1>
-
-    <input-global title="" name="user" :value="userID.user" @update:value="newValue => updateI('user', newValue)" />
+    <input title="" name="user" :value="userID.user" />
+    <input title="" name="email" :value="userID.email" />
+    <input title="" name="role" :value="userID.role" />
+    <!-- <input-global title="" name="user" :value="userID.user" @update:value="newValue => updateI('user', newValue)" />
     <input-global title="" name="email" :value="userID.email" @update:value="newValue => updateI('email', newValue)" />
-    <input-global title="" name="role" :value="userID.role" @update:value="newValue => updateI('role', newValue)" />
+    <input-global title="" name="role" :value="userID.role" @update:value="newValue => updateI('role', newValue)" /> -->
     <div>
         <global-btn btn_global="actualizar" type="submit" @click="addEdit" />
     </div>

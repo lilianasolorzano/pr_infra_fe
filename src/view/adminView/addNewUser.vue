@@ -23,6 +23,7 @@
     </form>
 </template>
 
+
 <script lang="ts" setup>
 import { inputGlobal } from '../../importFile';
 import { globalBtn } from '../../importFile';

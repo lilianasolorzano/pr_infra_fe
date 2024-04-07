@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IdUsuario } from '../types';
+import {  IduserIAM, IdUsuario, secretUserIAM } from '../types';
 export const usedataStore = defineStore({
     id: 'datos',
     state: () => ({
@@ -17,6 +17,7 @@ export const usedataStore = defineStore({
         // editar usuario, obtener solo el usuario a editar
         dataEditID: [] as IdUsuario[],
          
+  
         // datos de usuario IAM    
              dataUsersIAM:[{
                 UserId:'',
@@ -26,8 +27,11 @@ export const usedataStore = defineStore({
                 Status:'',
                 ExpirationDate:'',
         }],
+                   // editar usuario IAM, obtener solo el usuario a editar
+        dataEditIAM: [] as IduserIAM[],
+        dataSecretIAM: [] as secretUserIAM[],
             //  registrar dato de usuario IAM 
-               dataIAM: [{
+        dataIAM: [{
                 UserId:'',
                 UserName:'',
                 accessKeyId:'',
@@ -64,6 +68,7 @@ export const usedataStore = defineStore({
                     role,
                 })
         },
+        // guardar datos editados de usuarios 
         userEdit(saveDataEdit: IdUsuario) {
             this.dataEditID.push(saveDataEdit)
         },
@@ -77,6 +82,27 @@ export const usedataStore = defineStore({
                 Status,
                 ExpirationDate,
             })
+        },
+        userSecretIA(iam_access_key: string, iam_user_name: string, secret_access_key: string, status: string)
+        {this.dataSecretIAM.push({
+            iam_access_key,
+            iam_user_name,
+            secret_access_key,
+            status
+        })},
+        // guardar datos editados de usuarios IAM secret
+         userEditIAM(saveDataEditIAM: IduserIAM) {
+             this.dataEditIAM.push(saveDataEditIAM)
+        },
+        userSecretIAM(dataSecretIAM: secretUserIAM) {
+             this.dataSecretIAM.push(dataSecretIAM)
+        },
+        // eliminar un acces_key 
+    deleteAccessKey(iam_user_name: string, iam_access_key:string) {
+        this.dataSecretIAM.push({
+            iam_user_name,
+            iam_access_key,
+             })
         },
         // registrar usuario 
         saveData(inputEvent) {

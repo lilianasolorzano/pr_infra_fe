@@ -3,7 +3,7 @@
     <form @submit.prevent="AddnewUserIAM">
         <input-global title="" name="Id de usuario" type="text" v-model="creatIAM.UserId"
             @update:value="newValue => listenUserIAM('UserId', newValue)" />
-        <input-global title="" name="Usuario IAM" type="text" v-model="creatIAM.userName"
+        <input-global title="" name="Usuario IAM" type="text" v-model="creatIAM.UserName"
             @update:value="newValue => listenUserIAM('userName', newValue)" />
         <input-global title="" name="Fecha de expiracion" type="date" v-model="creatIAM.ExpirationDate"
             @update:value="newValue => listenUserIAM('ExpirationDate', newValue)" />
@@ -27,7 +27,7 @@ Amplify.configure(amplifyconfig)
 const dataStore = usedataStore()
 
 const creatIAM = ref<CredentRegistIAM>({
-    userName: '',
+    UserName: '',
 })
 
 const creatUserIAM = async () => {
@@ -54,7 +54,7 @@ const listenUserIAM = (fielName: string, value: string) => {
 }
 function AddnewUserIAM() {
     dataStore.saveDataIAM({
-        userName: creatIAM.value.userName
+        userName: creatIAM.value.UserName
     })
 }
 

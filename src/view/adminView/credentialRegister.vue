@@ -5,13 +5,13 @@
         <label for="userId">Seleccionar Usuario:</label>
         <select v-model="selectedUserName" id="user" @change="fillUserData">
             <option value="">Seleccione un usuario</option>
-            <option v-for="datos in userListIAM" :key="datos.userName" :value="datos.userName">{{ datos.userName }}
+            <option v-for="datos in userListIAM" :key="datos.UserName" :value="datos.UserName">{{ datos.UserName }}
             </option>
         </select>
 
 
-        <input-global v-if="selectedUserName" :user="registCredential.userName" title="" type="" name="Id de usuario"
-            id="UserName" v-model="registCredential.userName"
+        <input-global v-if="selectedUserName" :user="registCredential.UserName" title="" type="" name="Id de usuario"
+            id="UserName" v-model="registCredential.UserName"
             @update:value="newValue => updateI('UserName', newValue)" />
         <input-global title="" type="" name="Usuario IAM " id="UserId" v-model="registCredential.UserId"
             @update:value="newValue => updateI('UserId', newValue)" />
@@ -39,7 +39,7 @@ const selectedUserName = ref<string>('');
 const userListIAM = ref<CredentRegistIAM[]>([]);
 const registCredential = ref<CredentRegistIAM>({
     UserId: '',
-    userName: '',
+    UserName: '',
     accessKeyId: '',
     secretKey: '',
     ExpirationDate: ''
@@ -65,7 +65,7 @@ async function fetchUsersData() {
             userListIAM.value.forEach((IAMcredential) => {
                 dataStore.registCredentialIAM(
                     IAMcredential.UserId as string,
-                    IAMcredential.userName as string,
+                    IAMcredential.UserName as string,
                     IAMcredential.accessKeyId as string,
                     IAMcredential.secretKey as string,
                     IAMcredential.date as string
@@ -92,14 +92,14 @@ const updateI = (fielName: string, value: string) => {
 // filtro de id de usuarios 
 async function fillUserData() {
     // en user,userName se puede cambiar por el id solo hay que provarlo 
-    const user = userListIAM.value.find(user => user.userName === selectedUserName.value);
+    const user = userListIAM.value.find(user => user.UserName === selectedUserName.value);
     if (user) {
         registCredential.value = { ...user };
     } else {
         // Limpiar datos del usuario si no se encontró el usuario seleccionado
         registCredential.value = {
             UserId: '',
-            userName: '',
+            UserName: '',
             accessKeyId: '',
             secretKey: ''
         };
