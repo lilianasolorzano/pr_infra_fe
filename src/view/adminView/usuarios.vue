@@ -51,7 +51,8 @@ import { tablegbl } from '../../importFile';
 import { globalBtn } from '../../importFile';
 import { Amplify } from 'aws-amplify';
 import * as  API from 'aws-amplify/api';
-import * as amplifyconfig from '../../amplifyconfiguration.json';
+// import * as amplifyconfig from '../../amplifyconfiguration.json';
+import amplifyConfig from '../../ampliconfig'
 import { IdUsuario } from '../../types/index';
 import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
@@ -60,7 +61,19 @@ import { inputGlobal } from '../../importFile';
 
 
 
-Amplify.configure(amplifyconfig);
+// const amplifyConfig = {
+//   aws_project_region: "us-east-1",
+//   aws_cloud_logic_custom: [
+//     {
+//       name: "access_API",
+//       endpoint: import.meta.env.VITE_ENDPOINT,
+//       region: "us-east-1"
+//     }
+//   ]
+// };
+
+
+Amplify.configure(amplifyConfig);
 const dataStore = usedataStore()
 
 const idUsers = ref<IdUsuario[]>([])

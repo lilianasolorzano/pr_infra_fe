@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import { credentialsTableAdmin } from './importFile';
-import componentePadre from './components/pruebadealgo/componentePadre.vue';
+// import { credentialsTableAdmin } from './importFile';
+// import componentePadre from './components/pruebadealgo/componentePadre.vue';
 // import credentialRegister from './view/adminView/credentialRegister.vue';
 // import credentialsCreate from './view/adminView/credentialsCreate.vue';
 // import { usuarios } from './importFile';

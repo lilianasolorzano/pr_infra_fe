@@ -1,5 +1,5 @@
 <template>
-  <nav class="styleNav">
+  <nav class="styleNav" v-if="$route.meta.showNavbar">
     <h1 class="text">The Palace Company</h1>
     <div class="aling">
       <div>
@@ -13,7 +13,6 @@
   </nav>
 
 </template>
-
 
 <script lang="ts" setup>
 import { globalBtn } from '../importFile';

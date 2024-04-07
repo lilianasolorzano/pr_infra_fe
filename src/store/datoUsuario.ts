@@ -1,31 +1,34 @@
 import { defineStore } from 'pinia';
-import {  IduserIAM, IdUsuario, secretUserIAM } from '../types';
+import { IduserIAM, IdUsuario, secretUserIAM } from '../types';
+// import { IdUsuario } from '../types';
+// import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
+
 export const usedataStore = defineStore({
     id: 'datos',
     state: () => ({
         // logeo de usuario 
         usuario: null,
-        rol: null,
         // datos de usuario 
-        dataUsers:[{
-            id:'',
-            user:'',
+        dataUsers: [{
+            id: '',
+            user: '',
             email: '',
-            password:'',
-            role:'',
+            password: '',
+            role: '',
         }],
         // editar usuario, obtener solo el usuario a editar
         dataEditID: [] as IdUsuario[],
          
   
         // datos de usuario IAM    
-             dataUsersIAM:[{
-                UserId:'',
-                UserName:'',
-                accessKeyId:'',
-                CreateDate:'',
-                Status:'',
-                ExpirationDate:'',
+        dataUsersIAM: [{
+            UserId: '',
+            UserName: '',
+            accessKeyId: '',
+            CreateDate: '',
+            Status: '',
+            ExpirationDate: '',
         }],
                    // editar usuario IAM, obtener solo el usuario a editar
         dataEditIAM: [] as IduserIAM[],
@@ -37,10 +40,12 @@ export const usedataStore = defineStore({
                 accessKeyId:'',
                 secretKey:'',
                 date:'',
-        }]
+        }],
+        isLoggedIn: Cookies.get('isLoggedIn') === 'true' || false,
+        role: Cookies.get('role') || '',
         //    logeo de usuario 
-            //    usuario: null,
-            //    rol: null,
+        //    usuario: null,
+        //    rol: null,
     }),
     actions: {
         // almacenar dato del JSON 
@@ -110,22 +115,21 @@ export const usedataStore = defineStore({
         },
 
         // registrar los usuarios IAM 
-          registCredentialIAM(UserName: string, UserId: string, accessKeyId: string, secretKey: string, date: string )
-            {
-                    this.dataIAM.push({
-                            UserId,
-                            UserName,
-                            accessKeyId,
-                            secretKey,
-                            date,
-                        
-                    })
-                    // console.error('dato erroneo', UserName)
-                       
+        registCredentialIAM(UserName: string, UserId: string, accessKeyId: string, secretKey: string, date: string) {
+            this.dataIAM.push({
+                UserId,
+                UserName,
+                accessKeyId,
+                secretKey,
+                date,
+
+            })
+            // console.error('dato erroneo', UserName)
+
         },
         //   guardar datos de nuevas credenciales 
-           saveDataIAM(inputEvent) {
-                this.dataIAM.push(inputEvent)
+        saveDataIAM(inputEvent) {
+            this.dataIAM.push(inputEvent)
         },
         iniciarSesion(usuario: null) {
             // checar dataUser , puedo que se camibie por datosUsuario 
@@ -137,10 +141,26 @@ export const usedataStore = defineStore({
         setUsuario(usuario: null) {
             this.usuario = usuario
         },
+
         setRol(rol: null) {
             this.rol = rol;
-        }
-    
+        },
+
+        setLoggedIn(role: string) {
+            // this.isLoggedIn = isLoggedIn
+            this.isLoggedIn = true;
+            if (role) {
+                this.role = role;
+                Cookies.set('role', role, { expires: 1 });
+            }
+            Cookies.set('isLoggedIn', 'true', { expires: 1 });
+        },
+
+        logout() {
+            this.isLoggedIn = false;
+            this.role = ''
+            Cookies.remove('isLoggedIn');
+        },
 
     },
 

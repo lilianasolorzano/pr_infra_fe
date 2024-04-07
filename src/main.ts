@@ -10,16 +10,13 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 const vuetify = createVuetify({
-    components,
-    directives,
-  });
+  components,
+  directives,
+});
 
-
-  
 createApp(App)
-.use( createPinia() )
-.use(routes)
-.use(vuetify)
-    .mount('#app');
+  .use(createPinia())
+  .use(routes)
+  .use(vuetify)
+  .mount('#app');
 
-    
