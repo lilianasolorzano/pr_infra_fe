@@ -1,11 +1,12 @@
 <template>
     <h1>editar usuario normal</h1>
-    <input title="" name="user" :value="userID.user" />
-    <input title="" name="email" :value="userID.email" />
-    <input title="" name="role" :value="userID.role" />
-    <!-- <input-global title="" name="user" :value="userID.user" @update:value="newValue => updateI('user', newValue)" />
+    <input-global title="" name="user" :value="userID.user" @update:value="newValue => updateI('user', newValue)" />
     <input-global title="" name="email" :value="userID.email" @update:value="newValue => updateI('email', newValue)" />
-    <input-global title="" name="role" :value="userID.role" @update:value="newValue => updateI('role', newValue)" /> -->
+    <!-- <input-global title="" name="role" :value="userID.role" /> -->
+    <div>
+        <v-select title="" id="UserRol" :items="['admin', 'invitado']" v-model="selectedOption" />
+    </div>
+
     <div>
         <global-btn btn_global="actualizar" type="submit" @click="addEdit" />
     </div>
@@ -15,8 +16,8 @@
 <script setup lang="ts">
 import { usedataStore } from '../store/datoUsuario';
 import * as  API from 'aws-amplify/api';
+import amplifyConfig from '../ampliconfig';
 import { Amplify } from 'aws-amplify';
-import * as amplifyconfig from '../amplifyconfiguration.json';
 import { IdUsuario } from '../types/index';
 import { onMounted, ref } from 'vue';
 import { inputGlobal } from '../importFile';
@@ -24,11 +25,12 @@ import { globalBtn } from '../importFile';
 import router from '../router/router';
 
 const dataStore = usedataStore()
+Amplify.configure(amplifyConfig);
 
 const props = defineProps(['id']);// Usuario seleccionado para edición
 const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '' });
+const selectedOption = ref('select...');
 
-Amplify.configure(amplifyconfig);
 
 async function getLogin() {
     try {
@@ -49,34 +51,10 @@ async function getLogin() {
             userID.value = data.data as unknown as IdUsuario
             console.log('idusers', userID.value)
             dataStore.userEdit(userID.value)
-            // propsUsers.value.forEach((UserEdit) => {
-            //     dataStore.user(
-            //         UserEdit.id as (string),
-            //         UserEdit.user as (string),
-            //         UserEdit.email as (string),
-            //         UserEdit.role as (string))
-            // })
         } else {
             console.log('sin respuesta')
         }
         console.log('dataStore', dataStore.userGet.length)
-
-        // if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
-        //     userID.value = data.data as unknown as IdUsuario[];
-        //     dataStore.clearUserIds();
-        // propsUsers.value.forEach((userss) => {
-        //     dataStore.userEdit(
-        //         userss.email as (string),
-        //         userss.id as (string),
-        //         userss.role as (string),
-        //         userss.user as (string)
-        //     )
-
-        // });
-        //     console.log('datastore', dataStore.user.length)
-        // } else {
-        //     propsUsers.value = []
-        // }
     } catch (error) {
         console.log('sin obtener datos', error);
         console.log('sin obtener datos')

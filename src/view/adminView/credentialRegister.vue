@@ -29,7 +29,7 @@ import { inputGlobal } from '../../importFile';
 import { CredentRegistIAM } from '../../types';
 import { ref, onMounted } from 'vue';
 import * as API from 'aws-amplify/api';
-import * as amplifyConfig from '../../amplifyconfiguration.json'
+import amplifyConfig from '../../ampliconfig';
 import { Amplify } from 'aws-amplify';
 import { usedataStore } from '../../store/datoUsuario';
 

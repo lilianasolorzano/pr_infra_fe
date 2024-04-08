@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'login',
     component: login,
-    meta: { showNavbar: true },
+    meta: { showNavbar: false },
   },
   {
     path: '/Home',
@@ -34,6 +34,13 @@ const routes: RouteRecordRaw[] = [
     name: 'editar',
     meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
     component: () => import('../components/editar.vue'),
+    props: true
+  },
+    {
+    path: '/user/:id',
+    name: 'user',
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
+    component: () => import('../view/adminView/user.vue'),
     props: true
   },
   {
@@ -92,14 +99,14 @@ router.beforeEach((to, _from, next) => {
   console.log("Valor de la variable en router.ts", isLoggedInValue)
   console.log("Valor de la variable en role", isRole)
 
-  /*  const isAuthorized =
-     (!to.meta.requiresAuth || isLoggedInValue) &&
-     (!to.name || isLoggedInValue) &&
-     (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
-     (!to.meta.requiresUser || isRole === 'INVITADO');
+  // /*  const isAuthorized =
+  //    (!to.meta.requiresAuth || isLoggedInValue) &&
+  //    (!to.name || isLoggedInValue) &&
+  //    (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
+  //    (!to.meta.requiresUser || isRole === 'INVITADO');
 
-   // Redirige al usuario a la página Forbidden si no está autorizado
-   isAuthorized ? next() : next({ name: 'Forbidden' }); */
+  //  // Redirige al usuario a la página Forbidden si no está autorizado
+  //  isAuthorized ? next() : next({ name: 'Forbidden' }); */
 
   type RolePaths = {
     ADMIN: string;

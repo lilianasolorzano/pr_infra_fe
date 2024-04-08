@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts" setup>
+import { NavBar } from './importFile';
 // import { credentialsTableAdmin } from './importFile';
 // import componentePadre from './components/pruebadealgo/componentePadre.vue';
 // import credentialRegister from './view/adminView/credentialRegister.vue';

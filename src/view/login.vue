@@ -34,10 +34,10 @@ import { useRouter } from 'vue-router';
 import { inicioSesion, UserData } from '../types';
 import * as API from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
-import * as amplifyconfig from '../amplifyconfiguration.json'
+import amplifyConfig from '../ampliconfig';
 import { usedataStore } from '../store/datoUsuario';
 
-Amplify.configure(amplifyconfig)
+Amplify.configure(amplifyConfig)
 const dataStore = usedataStore()
 
 const loginDetails = ref<inicioSesion>({
@@ -80,7 +80,7 @@ const handleLogin = async () => {
                 console.log("auth, login", role)
 
                 const roleRoutes = {
-                    'ADMIN': '/Home',
+                    'ADMIN': '/users',
                     'INVITADO': '/clientView'
                 };
 

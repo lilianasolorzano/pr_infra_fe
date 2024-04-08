@@ -20,10 +20,10 @@ import { ref } from 'vue'
 import { CredentRegistIAM } from '../../types';
 import { Amplify } from 'aws-amplify';
 import * as API from 'aws-amplify/api';
-import * as amplifyconfig from '../../amplifyconfiguration.json';
+import amplifyConfig from '../../ampliconfig';
 import { usedataStore } from '../../store/datoUsuario';
 
-Amplify.configure(amplifyconfig)
+Amplify.configure(amplifyConfig)
 const dataStore = usedataStore()
 
 const creatIAM = ref<CredentRegistIAM>({

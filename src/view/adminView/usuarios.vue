@@ -6,15 +6,15 @@
   <global-btn btn_global="Agregar usuario" buttonClass="styleBUser" dark @click="dialog = true" />
   <div>
     <tablegbl :columns="columns" :data="dataTable" :showButtonEditar="true" :showButtonEliminar="true"
-      :showButtonVisualize="true" @deleteUser="handleDeleteJSON" @editUser="handleEdit" @visualizeUser="handleVisualize"
-      class="padding" />
+      :showButtonVisualizeUser="true" @deleteUser="handleDeleteJSON" @editUser="handleEdit"
+      @visualizeUser="handleVisualizeUser" class="padding" />
   </div>
 
   <!-- Ventana modal -->
   <form @submit.prevent="AddnewUser">
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
-        <v-card-title>Agregar Nueva Credencial</v-card-title>
+        <v-card-title>Agregar Nueva Usuario</v-card-title>
         <v-card-text>
           <div>
             <input-global title="" type="text" id="UserName" v-model="UsuarioAgr.user"
@@ -35,7 +35,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary">
-            <global-btn btn_global="Regitrar" :stop-event="true" @click="createUser" />
+            <global-btn btn_global="Regitrar" :stop-event="true" @click="CreateCredential" />
           </v-btn>
           <!-- <v-btn color="primary" @click="agregarCredencial">Guardar</v-btn> -->
           <v-btn @click="dialog = false">Cancelar</v-btn>
@@ -51,26 +51,12 @@ import { tablegbl } from '../../importFile';
 import { globalBtn } from '../../importFile';
 import { Amplify } from 'aws-amplify';
 import * as  API from 'aws-amplify/api';
-// import * as amplifyconfig from '../../amplifyconfiguration.json';
 import amplifyConfig from '../../ampliconfig'
 import { IdUsuario } from '../../types/index';
 import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
 import router from '../../router/router';
 import { inputGlobal } from '../../importFile';
-
-
-
-// const amplifyConfig = {
-//   aws_project_region: "us-east-1",
-//   aws_cloud_logic_custom: [
-//     {
-//       name: "access_API",
-//       endpoint: import.meta.env.VITE_ENDPOINT,
-//       region: "us-east-1"
-//     }
-//   ]
-// };
 
 
 Amplify.configure(amplifyConfig);
@@ -148,8 +134,20 @@ const handleEdit = (id: string) => {
 }
 
 
-const handleVisualize = () => {
-  console.log('Otra acción');
+const handleVisualizeUser = (id: string) => {
+  const userVisualice = idUsers.value.find(user => user.id === id)
+
+  if (id) {
+    router.push({
+      name: 'user',
+      params: {
+        id: userVisualice?.id
+      }
+    })
+
+  } else {
+    console.error('Usuario no encontrado');
+  }
 };
 
 
@@ -207,9 +205,10 @@ const createUser = async () => {
         }
       }
     });
-    console.log('Credencial agregada');
+    console.log('Usuario agregado');
     mensaje.value = 'Usuario agregado exitosamente';
     dialog.value = false;
+    dataStore.clearUserIds()
 
   } catch (error) {
     console.log('create call failed: ', error);
@@ -221,6 +220,12 @@ const createUser = async () => {
 const updateI = (fielName: string, value: string) => {
   UsuarioAgr.value = { ...UsuarioAgr.value, [fielName]: value }
   console.log('datos agregados', UsuarioAgr.value)
+}
+
+const CreateCredential = async (fielName: string, value: string) => {
+  updateI(fielName, value)
+  await createUser()
+  router.push('/Users')
 }
 
 // enviar los datos del formulario a mi store 

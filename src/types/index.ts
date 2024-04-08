@@ -4,15 +4,6 @@ export interface IdUsuario {
     email?: string,
     password?: string,
     role?: string,
-
-    // id:string,
-    // createdAt?:string,
-    // updatedAt?:string,
-    // user?:string,
-    // password?:string,
-    // code?:string,
-    // role?:string,
-    // email?:string,
 };
 export interface IduserIAM{
 // interfaz reutilizable, acceskeyId es el unico que no se utiliza en visualizeCredIAM

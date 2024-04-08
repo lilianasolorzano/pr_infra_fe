@@ -39,7 +39,7 @@
                     <button @click="ActDesctAccesKey">{{ status ? 'Desactivar' : 'Activar' }}</button>
                 </div>
 
-                <globalBtn btn_global="Mostrar" @click="toggleInfo(secret)" />
+                <globalBtn btn_global="Mostrar" @click="toggleInfo" />
             </tr>
 
             </td>
@@ -53,14 +53,14 @@
 <script setup lang="ts">
 import { usedataStore } from '../../store/datoUsuario';
 import * as  API from 'aws-amplify/api';
+import amplifyConfig from '../../ampliconfig';
 import { Amplify } from 'aws-amplify';
-import * as amplifyconfig from '../../amplifyconfiguration.json'
 import { onMounted, ref } from 'vue';
 import { globalBtn } from '../../importFile';
 import { IduserIAM, secretUserIAM } from '../../types/index';
-// import { IduserIAM } from '../../types/index';
-// import router from '../../router/router';
 
+
+Amplify.configure(amplifyConfig);
 
 
 const dataStore = usedataStore()
@@ -87,7 +87,6 @@ const secretIAM = ref<secretUserIAM[]>([]);
 
 console.log('secretIAM', secretIAM)
 
-Amplify.configure(amplifyconfig);
 
 async function getLogin() {
     try {

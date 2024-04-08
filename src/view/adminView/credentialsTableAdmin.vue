@@ -1,16 +1,16 @@
 <template>
-   <h1>Credenciales</h1>
+   <h1>Usuarios IAM</h1>
    <global-btn btn_global="Agregar credencial" buttonClass="agrBtnCred" dark @click="dialog1 = true" />
 
    <global-btn btn_global="Crear credencial" buttonClass="regBtnCred" dark @click="dialog2 = true" />
    <div>
       <tablegbl :columns="columns" :data="dataTable" :showButtonEditar="false" :showButtonEliminar="false"
-         :showButtonVisualize="true" :showButtonEliminarIAM="true" @deleteIAM="handleDeleteIAM"
+         :showButtonVisualize="true" :showButtonEliminarIAM="true" @deleteIAM="handleDeleteIAM(UserName)"
          @visualizeCredUser="handleVisualizeIAM" />
    </div>
 
 
-   <!-- Ventana modal para agregar credencial-->
+   <!-- Ventana modal para agregar nueva credencial-->
    <form @submit.prevent="fetchUsersData">
       <v-dialog v-model="dialog1" max-width="600px">
          <v-card>
@@ -25,28 +25,29 @@
                      </option>
                   </select>
                </div>
+
+
                <!-- Contenido del formulario para agregar la credencial -->
-               <!-- Aquí puedes agregar los campos y lógica para agregar la credencial -->
-               <!-- <input-global v-if="selectedUserName" :user="registCredential.UserName" title="" type=""
-                  name="Id de usuario" id="UserName" v-model="registCredential.UserName"
-                  :value="registCredential.UserName" @update:value=" updateI('UserName', $event.target.value)" /> -->
+               <input-global title="" name="Id de usuario " :value="registCredential.UserId"
+                  @update:value="newValue => updateI('UserId', newValue)" />
+
+               <input-global title="" name=" Llave de accesos IAM" :value="registCredential.accessKeyId"
+                  @update:value="newValue => updateI('accessKeyId', newValue)" />
+
+               <input-global title="" name="Llave secreta" :value="registCredential.secretKey"
+                  @update:value="newValue => updateI('secretKey', newValue)" />
+
+               <input-global title="" name="Fecha de expiracion" :value="registCredential.ExpirationDate"
+                  @update:value="newValue => updateI('ExpirationDate', newValue)" />
 
 
-               <input-global title="" type="" name="Usuario IAM " id="UserId" v-model="registCredential.UserId"
-                  @input="updateI('UserId', $event.target.value)" />
 
-               <input-global title="" type="" name=" Llave de acceso IAM" id="accessKeyId"
-                  v-model="registCredential.accessKeyId" @input="updateI('accessKeyId', $event.proxy.target.value)" />
-
-               <input-global title="" type="" name="Llave secreta" id="secretKey" v-model="registCredential.secretKey"
-                  @input="updateI('secretKey', $event.target.value)" />
-
-               <input-global title="" type="" name="Fecha de expiracion" id="ExpirationDate"
-                  v-model="registCredential.ExpirationDate" @input="updateI('ExpirationDate', $event.target.value)" />
+               <!-- <input-global title="" type="" name="Fecha de expiracion" id="ExpirationDate"
+                  v-model="registCredential.ExpirationDate" @input="updateI('ExpirationDate', $event.target.value)" /> -->
 
             </v-card-text>
             <v-card-actions>
-               <v-btn color="primary" @click="agregarCredencial">Guardar</v-btn>
+               <v-btn color="primary" @click="AgrCredential">Guardar</v-btn>
                <v-btn @click="dialog1 = false">Cancelar</v-btn>
             </v-card-actions>
          </v-card>
@@ -59,18 +60,26 @@
          <v-card>
             <v-card-title>Crear Credencial</v-card-title>
             <v-card-text>
-               <input-global title="" name="Id de usuario" type="text" v-model="creatIAM.UserId"
+               <div>
+                  <select v-model="selectedUserName" id="user" @change="fillCreatCred">
+                     <option value="">Seleccione un usuario...</option>
+                     <option v-for="datos in  usersIAM" :key="datos.UserName" :value="datos.UserName">{{
+      datos.UserName
+   }}
+                     </option>
+                  </select>
+               </div>
+               <p>{{ CreadCredential.UserName }}</p>
+               <input-global title="" name="Id de usuario" :value="registCredential.UserId"
                   @update:value="newValue => listenUserIAM('UserId', newValue)" />
-               <input-global title="" name="Usuario IAM" type="text" v-model="creatIAM.userName"
-                  @update:value="newValue => listenUserIAM('userName', newValue)" />
-               <input-global title="" name="Fecha de expiracion" type="date" v-model="creatIAM.ExpirationDate"
+               <input-global title="" name="Fecha de expiracion" type="date" :value="registCredential.ExpirationDate"
                   @update:value="newValue => listenUserIAM('ExpirationDate', newValue)" />
                <div>
                   <!-- <global-btn btn_global="Guardar" @click="creatUserIAM" /> -->
                </div>
             </v-card-text>
             <v-card-actions>
-               <v-btn color="primary" @click="creatUserIAM">Guardar</v-btn>
+               <v-btn color="primary" @click="CreateCredential">Guardar</v-btn>
                <v-btn @click="dialog2 = false">Cancelar</v-btn>
             </v-card-actions>
          </v-card>
@@ -85,7 +94,7 @@ import { tablegbl } from '../../importFile';
 import { globalBtn } from '../../importFile';
 import { Amplify } from 'aws-amplify';
 import * as  API from 'aws-amplify/api';
-import * as amplifyconfig from '../../amplifyconfiguration.json';
+import amplifyConfig from '../../ampliconfig';
 import { IduserIAM } from '../../types';
 import { CredentRegistIAM } from '../../types';
 import { CreatRegistIAM } from '../../types';
@@ -94,7 +103,7 @@ import router from '../../router/router';
 
 
 
-Amplify.configure(amplifyconfig)
+Amplify.configure(amplifyConfig)
 const dataStore = usedataStore()
 const usersIAM = ref<IduserIAM[]>([])
 
@@ -167,8 +176,8 @@ async function handleDeleteIAM(UserName: string | number) {
       usersIAM.value = usersIAM.value.filter((row) => row.UserId !== UserName)
       console.log('iduser', usersIAM.value)
 
-      // dataStore.clearUserIds();
 
+      // dataStore.clearUserIds();
       usersIAM.value.forEach((delUser) => {
          dataStore.userIAM(
             delUser.UserId as string,
@@ -203,17 +212,24 @@ const handleVisualizeIAM = (UserName: string | number) => {
 }
 
 
-// ventana modal para registrar credenciales
+// ventana modal para registrar nuevas credenciales
 const dialog1 = ref(false);
 
 const selectedUserName = ref<string>('');
 const userListIAM = ref<CredentRegistIAM[]>([]);
+console.log('seleccion de usuarios', userListIAM)
 
 const registCredential = ref<CredentRegistIAM>({
    UserId: '',
-   UserName: '',
    accessKeyId: '',
    secretKey: '',
+   ExpirationDate: ''
+})
+// crear credencial de usuarios IAM 
+// const UserIAMCreateCred = ref<IduserIAM[]>([])
+const CreadCredential = ref<IduserIAM>({
+   UserId: '',
+   UserName: '',
    ExpirationDate: ''
 })
 async function fetchUsersData() {
@@ -252,10 +268,7 @@ onMounted(() => {
    fetchUsersData();
 });
 
-const updateI = (fielName: string, value: string) => {
-   registCredential.value = { ...registCredential.value, [fielName]: value }
-   console.log('datos agregados', registCredential.value)
-}
+
 
 const agregarCredencial = () => {
    // Lógica para agregar la credencial
@@ -265,27 +278,49 @@ const agregarCredencial = () => {
 
 
 // filtro de id de usuarios 
-async function fillUserData() {
-   // en user,userName se puede cambiar por el id solo hay que provarlo 
-   const user = userListIAM.value.find(user => user.UserName === selectedUserName.value);
-   console.log('usuario seleccionado', user)
-   if (user) {
-      // registCredential.value
-      registCredential.value.UserName = user.UserName;
-      registCredential.value.UserId = user.UserId;
-      registCredential.value.accessKeyId = user.accessKeyId;
-      registCredential.value.secretKey = user.secretKey;
-      registCredential.value.ExpirationDate = user.ExpirationDate;
-   } else {
-      // Limpiar datos del usuario si no se encontró el usuario seleccionado
-      registCredential.value = {
-         UserId: '',
-         UserName: '',
-         accessKeyId: '',
-         secretKey: ''
-      };
+// ejemplo de filter es prueba
+const fillUserData = () => {
+   const selectedUser = userListIAM.value.find(user => user.UserName === selectedUserName.value);
+   if (selectedUser) {
+      registCredential.value.UserName = selectedUser.UserName;
+      registCredential.value.UserId = selectedUser.UserId;
+      registCredential.value.accessKeyId = selectedUser.accessKeyId;
+      registCredential.value.secretKey = selectedUser.secretKey;
    }
+};
+
+const updateI = (fielName: string, value: string) => {
+   registCredential.value = { ...registCredential.value, [fielName]: value }
+   console.log('datos agregados', registCredential.value)
 }
+
+const AgrCredential = async (fielName: string, value: string) => {
+   updateI(fielName, value)
+   await fetchUsersData()
+   router.push('/Users')
+}
+
+// async function fillUserData() {
+//    // en user,userName se puede cambiar por el id solo hay que provarlo 
+//    const user = userListIAM.value.find(user => user.UserName === selectedUserName.value);
+//    console.log('usuario seleccionado', user)
+//    if (user) {
+//       // registCredential.value
+//       registCredential.value.UserName = user.UserName;
+//       registCredential.value.UserId = user.UserId;
+//       registCredential.value.accessKeyId = user.accessKeyId;
+//       registCredential.value.secretKey = user.secretKey;
+//       registCredential.value.ExpirationDate = user.ExpirationDate;
+//    } else {
+//       // Limpiar datos del usuario si no se encontró el usuario seleccionado
+//       registCredential.value = {
+//          UserId: '',
+//          UserName: '',
+//          accessKeyId: '',
+//          secretKey: ''
+//       };
+//    }
+// }
 
 // ventana modal para crear credenciales 
 const dialog2 = ref(false);
@@ -314,10 +349,27 @@ const creatUserIAM = async () => {
    }
 }
 
+// ejemplo de filter es prueba
+const fillCreatCred = () => {
+   const selectedUser = userListIAM.value.find(user => user.UserName === selectedUserName.value);
+   if (selectedUser) {
+      registCredential.value.UserName = selectedUser.UserName;
+      registCredential.value.UserId = selectedUser.UserId;
+      registCredential.value.accessKeyId = selectedUser.accessKeyId;
+      registCredential.value.secretKey = selectedUser.secretKey;
+   }
+};
 const listenUserIAM = (fielName: string, value: string) => {
    creatIAM.value = { ...creatIAM.value, [fielName]: value }
    console.log('creacion de credencial', creatIAM.value)
 }
+
+const CreateCredential = async (fielName: string, value: string) => {
+   updateI(fielName, value)
+   await creatUserIAM()
+   router.push('/Users')
+}
+
 function AddnewUserIAM() {
    dataStore.saveDataIAM({
       userName: creatIAM.value.userName
