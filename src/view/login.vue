@@ -21,10 +21,11 @@ import { useRouter } from 'vue-router';
 import { inicioSesion, UserData } from '../types';
 import * as API from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
-import * as amplifyconfig from '../amplifyconfiguration.json'
+// import * as amplifyconfig from '../amplifyconfiguration.json'
+import { amplifyConfig } from '../importFile'
 import { usedataStore } from '../store/datoUsuario';
 
-Amplify.configure(amplifyconfig)
+Amplify.configure(amplifyConfig)
 const dataStore = usedataStore()
 
 const loginDetails = ref<inicioSesion>({
