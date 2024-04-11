@@ -51,12 +51,8 @@ import { tablegbl } from '../../importFile';
 import { globalBtn } from '../../importFile';
 import { Amplify } from 'aws-amplify';
 import * as  API from 'aws-amplify/api';
-<<<<<<< HEAD
 // import * as amplifyconfig from '../../amplifyconfiguration.json';
 import { amplifyConfig } from '../../importFile'
-=======
-import amplifyConfig from '../../ampliconfig'
->>>>>>> master
 import { IdUsuario } from '../../types/index';
 import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
