@@ -6,8 +6,7 @@
   <global-btn btn_global="Agregar usuario" buttonClass="styleBUser" dark @click="dialog = true" />
   <div>
     <tablegbl :columns="columns" :data="dataTable" :showButtonEditar="true" :showButtonEliminar="true"
-      :showButtonVisualizeUser="true" @deleteUser="handleDeleteJSON" @editUser="handleEdit"
-      @visualizeUser="handleVisualizeUser" class="padding" />
+      @deleteUser="handleDeleteJSON" @editUser="handleEdit" class="padding" />
   </div>
 
   <!-- Ventana modal -->
@@ -43,6 +42,10 @@
       </v-card>
     </v-dialog>
   </form>
+
+
+
+  <button @click="showAlert">Hello world</button>
 </template>
 
 
@@ -58,6 +61,30 @@ import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
 import router from '../../router/router';
 import { inputGlobal } from '../../importFile';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
+
+
+function showAlert() {
+  // $swal('Hello Vue world!!!');
+  // swal('Hello Vue world!!!');
+  Swal.fire({
+    title: "Enter your IP address",
+    input: "text",
+    inputLabel: "Your IP address",
+    showCancelButton: true,
+  });
+
+}
+
+// export default {
+// methods: {
+//   showAlert() {
+//     this.$swal('Hello Vue world!!!');
+
+//     // Use sweetalert2
+//   }
+// }
 
 
 Amplify.configure(amplifyConfig);
@@ -133,24 +160,6 @@ const handleEdit = (id: string) => {
   }
 
 }
-
-
-const handleVisualizeUser = (id: string) => {
-  const userVisualice = idUsers.value.find(user => user.id === id)
-
-  if (id) {
-    router.push({
-      name: 'user',
-      params: {
-        id: userVisualice?.id
-      }
-    })
-
-  } else {
-    console.error('Usuario no encontrado');
-  }
-};
-
 
 async function handleDeleteJSON(Idusers: string | number) {
   try {

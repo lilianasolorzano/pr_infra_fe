@@ -9,14 +9,9 @@ export const usedataStore = defineStore({
     state: () => ({
         // logeo de usuario 
         usuario: null,
-        // datos de usuario 
-        dataUsers: [{
-            id: '',
-            user: '',
-            email: '',
-            password: '',
-            role: '',
-        }],
+
+        
+        dataUsers: [] as IdUsuario[],
         // editar usuario, obtener solo el usuario a editar
         dataEditID: [] as IdUsuario[],
 
@@ -25,21 +20,35 @@ export const usedataStore = defineStore({
         dataUsersIAM: [{
             UserId: '',
             UserName: '',
-            accessKeyId: '',
             CreateDate: '',
             Status: '',
-            ExpirationDate: '',
+            accessKeyId: '',
+            secretAccess:'',
+            dateExpiration: '',
         }],
-        // editar usuario IAM, obtener solo el usuario a editar
+
+        // creacion de usuarios IAM 
+        creatUserIAM: [{ UserName: '' }],
+
+
+        creatCrentRegIAM: [{ UserName: '' }],
+        
+        
+                   // editar usuario IAM, obtener solo el usuario a editar
         dataEditIAM: [] as IduserIAM[],
         dataSecretIAM: [] as secretUserIAM[],
-        //  registrar dato de usuario IAM 
+
+            //  registrar credencial de usuario IAM 
         dataIAM: [{
-            UserId: '',
-            UserName: '',
-            accessKeyId: '',
-            secretKey: '',
-            date: '',
+            UserName:'',
+                UserId:'',
+                accessKeyId:'',
+                secretAccess:'',
+                dateExpiration:'',
+        }],
+        whitOutCred: [{
+              UserId:'',
+                UserName:''
         }],
         isLoggedIn: Cookies.get('isLoggedIn') === 'true' || false,
         role: Cookies.get('role') || '',
@@ -89,14 +98,15 @@ export const usedataStore = defineStore({
             this.dataEditID.push(saveDataEdit)
         },
         // metodo para obtener los datos IAM de endpoint
-        userIAM(UserId: string, UserName: string, accessKeyId: string, CreateDate: string, Status: string, ExpirationDate: string) {
+        userIAM(UserId: string, UserName: string, accessKeyId: string, CreateDate: string, Status: string,secretAccess:string, dateExpiration: string,) {
             this.dataUsersIAM.push({
                 UserId,
                 UserName,
                 accessKeyId,
                 CreateDate,
                 Status,
-                ExpirationDate,
+                secretAccess,
+                dateExpiration,
             })
         },
         userSecretIA(iam_access_key: string, iam_user_name: string, secret_access_key: string, status: string) {
@@ -121,27 +131,50 @@ export const usedataStore = defineStore({
                 iam_access_key,
             })
         },
-        // registrar usuario 
-        saveData(inputEvent) {
-            this.dataUsers.push(inputEvent)
+        // registrar usuario normal
+        saveData(dataUsers: IdUsuario) {
+            this.dataUsers.push(dataUsers)
+        },
+           // registrar usuario IAM
+        saveDataIAMs({ inputEvent }: { inputEvent: any}) {
+            this.creatUserIAM.push(inputEvent)
         },
 
+
         // registrar los usuarios IAM 
-        registCredentialIAM(UserName: string, UserId: string, accessKeyId: string, secretKey: string, date: string) {
+        registCredentialIAM(UserName: string, UserId: string, accessKeyId: string, secretAccess: string, dateExpiration: string) {
             this.dataIAM.push({
                 UserId,
                 UserName,
                 accessKeyId,
-                secretKey,
-                date,
+                secretAccess,
+                dateExpiration,
+
+            })
+            // console.error('dato erroneo', UserName)
+
+        },
+             CreadwhitOutCredentialIAM(UserName: string, UserId: string) {
+            this.whitOutCred.push({
+                UserId,
+                UserName,
 
             })
             // console.error('dato erroneo', UserName)
 
         },
         //   guardar datos de nuevas credenciales 
-        saveDataIAM(inputEvent) {
-            this.dataIAM.push(inputEvent)
+        saveDataIAM(userName:string  ) {
+            this.creatUserIAM.push({
+                userName,
+            })
+                
+        },
+
+        saveRegCredentialIAM(UserName: string) {
+            this.creatCrentRegIAM.push({
+                UserName,
+            })
         },
         iniciarSesion(usuario: null) {
             // checar dataUser , puedo que se camibie por datosUsuario 

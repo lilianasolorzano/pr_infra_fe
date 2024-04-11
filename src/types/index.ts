@@ -5,14 +5,15 @@ export interface IdUsuario {
     password?: string,
     role?: string,
 };
-export interface IduserIAM {
-    // interfaz reutilizable, acceskeyId es el unico que no se utiliza en visualizeCredIAM
-    UserId?: string,
-    UserName?: string,
-    accessKeyId?: string,
-    CreateDate?: string,
-    Status?: string,
-    ExpirationDate?: string,
+export interface IduserIAM{
+// interfaz reutilizable, acceskeyId es el unico que no se utiliza en visualizeCredIAM
+    UserId?:string,
+    UserName?:string,
+    accessKeyId?:string, 
+    CreateDate?:string,
+    Status?:string,
+    dateExpiration?: string,
+    secretAcces?:string
 };
 export interface secretUserIAM {
 
@@ -21,50 +22,30 @@ export interface secretUserIAM {
     secret_access_key?: string,
     status?: string
 };
-
-// export interface ApiResponse {
-//   IduserIAM: IduserIAM[];
-//   secretUserIAM: secretUserIAM[];
-// }
-export interface CredentRegistIAM {
-    // hay que colocar los nombre igual que lla endpoint 
-    UserId?: string | number,
+export interface userWithOutCredential{
+    UserId?:string | number,
     UserName?: string,
-    accessKeyId?: string,
+     expirationDate?:string,
+    
+};
+
+export interface CredentRegistIAM{
+    UserId?:string | number,
+    UserName?:string,
+    accessKeyId?:string,
+    secretAccess?: string,
+    dateExpiration?:string,
+    
+};
+export interface CreatRegistIAM{
+    UserId?:string | number,
+    userName?:string,
+    accessKeyId?:string,
     secretKey?: string,
     date?: string,
     ExpirationDate?: string,
-    dateExpiration?: string,
 
 };
-export interface CreatRegistIAM {
-    // hay que colocar los nombre igual que lla endpoint 
-    UserId?: string | number,
-    userName?: string,
-    accessKeyId?: string,
-    secretKey?: string,
-    date?: string,
-    ExpirationDate?: string,
-
-};
-
-// export interface IduserIAM {
-//     UserId: string,
-//     UserName?: string,
-//     accessKeyId?: string,
-//     CreateDate?: string,
-//     Status?: string,
-//     ExpirationDate?: string,
-// };
-// export interface CredentRegistIAM {
-//     // hay que colocar los nombre igual que lla endpoint 
-//     UserId?: string | number,
-//     userName?: string,
-//     accessKeyId?: string,
-//     secretKey?: string,
-//     date?: string,
-//     ExpirationDate?: string,
-// };
 export interface inicioSesion {
     user: string,
     password: string

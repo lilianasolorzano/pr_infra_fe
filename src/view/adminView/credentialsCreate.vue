@@ -1,6 +1,6 @@
 <template>
-    <h1>Creacion de usuario IAM</h1>
-    <form @submit.prevent="AddnewUserIAM">
+    <h1>Creacion de credencial IAM que no sirve este componente</h1>
+    <form v-bind="AddnewUserIAM">
         <input-global title="" name="Id de usuario" type="text" v-model="creatIAM.UserId"
             @update:value="newValue => listenUserIAM('UserId', newValue)" />
         <input-global title="" name="Usuario IAM" type="text" v-model="creatIAM.UserName"
@@ -52,10 +52,15 @@ const listenUserIAM = (fielName: string, value: string) => {
     creatIAM.value = { ...creatIAM.value, [fielName]: value }
     console.log(creatIAM.value)
 }
-function AddnewUserIAM() {
-    dataStore.saveDataIAM({
-        userName: creatIAM.value.UserName
-    })
+function AddnewUserIAM(newuseriam: { UserId: string, UserName: string, accessKeyId: string, secretKey: string, date: string }) {
+    dataStore.saveDataIAM(
+        newuseriam.UserId,
+        newuseriam.UserName,
+        newuseriam.accessKeyId,
+        newuseriam.secretKey,
+        newuseriam.date,
+    )
+
 }
 
 </script>

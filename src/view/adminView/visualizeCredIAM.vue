@@ -8,8 +8,8 @@
         <v-list>
             <v-list-item v-for="(secret, index) in dataStore.dataSecretIAM" :key="index" @click="toggleInfo">
                 <v-list-item-title @click="toggleInfo; handleShow(secret.iam_access_key, index)">Mostrar Secret Key {{
-                    index + 1
-                }}</v-list-item-title>
+        index + 1
+    }}</v-list-item-title>
             </v-list-item>
         </v-list>
     </v-menu>
@@ -25,7 +25,7 @@
     <div class="datesdel" v-for="(secret, index) in dataStore.dataSecretIAM" :key="index">
         <v-btn :color="buttonColor(index)" v-show="activeIndex === index" class="ActDate"
             @click="ActDesctAccesKey(index)" :disabled="!secret.secret_access_key">{{ secret.status === 'Active' ?
-                'Desactivar' : 'Activar' }}</v-btn>
+        'Desactivar' : 'Activar' }}</v-btn>
 
     </div>
 
@@ -388,14 +388,6 @@ const createdCredSecond = async () => {
 
     }
 }
-
-
-// function AddnewAccessIAM() {
-//     dataStore.userEditIAM({
-//         accessKeyId: userID.value?.accessKeyId,
-//         Status: userID.value?.Status
-//     })
-// }
 
 </script>
 <style scoped>
