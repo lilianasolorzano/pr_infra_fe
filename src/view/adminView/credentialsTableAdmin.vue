@@ -63,7 +63,7 @@
 
                   <select v-model="selectedUserName" id="user" @change="fillCreatCred">
                      <option value="">Seleccione un usuario...</option>
-                     <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="creatIAM.UserName">{{
+                     <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="dato.UserName">{{
       dato.UserName
    }}
                      </option>
@@ -380,8 +380,6 @@ const userListWhitoutCred = ref<userWithOutCredential[]>([]);
 const dialog2 = ref(false);
 const creatIAM = ref<userWithOutCredential>({
    UserName: '',
-   UserId: '',
-   expirationDate: '',
 
 })
 

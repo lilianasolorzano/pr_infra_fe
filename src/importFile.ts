@@ -3,6 +3,7 @@ import tablegbl from "./components/tablegbl.vue";
 import credentialsTableAdmin from "./view/adminView/credentialsTableAdmin.vue";
 import usuarios from "./view/adminView/usuarios.vue";
 import inputGlobal from "./components/inputGlobal.vue";
+import amplifyConfig from "./ampliconfig";
 import NavBar from "./components/Nav-bar.vue";
 import visualizeCredIAM from "./view/adminView/visualizeCredIAM.vue";
 
@@ -12,6 +13,7 @@ export {
     credentialsTableAdmin,
     usuarios,
     inputGlobal,
+    amplifyConfig,
     NavBar,
-visualizeCredIAM
+    visualizeCredIAM
 }
