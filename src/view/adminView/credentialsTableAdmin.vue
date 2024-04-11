@@ -20,8 +20,8 @@
                   <select v-model="selectedUserName" id="user" @change="fillUserData">
                      <option value="">Seleccione un usuario...</option>
                      <option v-for="datos in userListIAM" :key="datos.UserName" :value="datos.UserName">{{
-      datos.UserName
-   }}
+                        datos.UserName
+                     }}
                      </option>
                   </select>
                </div>
@@ -63,9 +63,9 @@
                <div>
                   <select v-model="selectedUserName" id="user" @change="fillCreatCred">
                      <option value="">Seleccione un usuario...</option>
-                     <option v-for="datos in  usersIAM" :key="datos.UserName" :value="datos.UserName">{{
-      datos.UserName
-   }}
+                     <option v-for="datos in usersIAM" :key="datos.UserName" :value="datos.UserName">{{
+                        datos.UserName
+                     }}
                      </option>
                   </select>
                </div>
@@ -127,7 +127,7 @@ async function getIAM() {
       if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
          usersIAM.value = data.data as unknown as IduserIAM[];
 
-         dataStore.clearUserIds();
+         dataStore.clearUserIdIAM();
          usersIAM.value.forEach((IAM) => {
 
             dataStore.userIAM(

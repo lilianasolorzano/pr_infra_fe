@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../components/editar.vue'),
     props: true
   },
-    {
+  {
     path: '/user/:id',
     name: 'user',
     meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
@@ -62,12 +62,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../view/adminView/credentialsCreate.vue')
   },
   {
-        path: '/VisualizeIAM/:UserName',
-        name: 'visualizeCredIAM',
-        meta: { requiresAdmin: true },
-        component: () => import('../view/adminView/visualizeCredIAM.vue'),
-        props: true
-    },
+    path: '/VisualizeIAM/:UserName',
+    name: 'visualizeCredIAM',
+    meta: { requiresAdmin: true },
+    component: () => import('../view/adminView/visualizeCredIAM.vue'),
+    props: true
+  },
   {
     path: '/clientView',
     name: 'client',
@@ -113,7 +113,7 @@ router.beforeEach((to, _from, next) => {
     INVITADO: string;
   };
   const roleRedirect = {
-    'ADMIN': '/Home',
+    'ADMIN': '/users',
     'INVITADO': '/clientView',
   };
 

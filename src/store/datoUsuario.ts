@@ -19,8 +19,8 @@ export const usedataStore = defineStore({
         }],
         // editar usuario, obtener solo el usuario a editar
         dataEditID: [] as IdUsuario[],
-         
-  
+
+
         // datos de usuario IAM    
         dataUsersIAM: [{
             UserId: '',
@@ -30,16 +30,16 @@ export const usedataStore = defineStore({
             Status: '',
             ExpirationDate: '',
         }],
-                   // editar usuario IAM, obtener solo el usuario a editar
+        // editar usuario IAM, obtener solo el usuario a editar
         dataEditIAM: [] as IduserIAM[],
         dataSecretIAM: [] as secretUserIAM[],
-            //  registrar dato de usuario IAM 
+        //  registrar dato de usuario IAM 
         dataIAM: [{
-                UserId:'',
-                UserName:'',
-                accessKeyId:'',
-                secretKey:'',
-                date:'',
+            UserId: '',
+            UserName: '',
+            accessKeyId: '',
+            secretKey: '',
+            date: '',
         }],
         isLoggedIn: Cookies.get('isLoggedIn') === 'true' || false,
         role: Cookies.get('role') || '',
@@ -48,6 +48,11 @@ export const usedataStore = defineStore({
         //    rol: null,
     }),
     actions: {
+
+        reset() {
+            this.$reset();
+        },
+
         // almacenar dato del JSON 
         userJson(id: string, user: string, email: string, password: string, role: string) {
             this.dataUsers.push({
@@ -61,6 +66,12 @@ export const usedataStore = defineStore({
         // limpiar usuario
         clearUserIds() {
             this.dataUsers = []
+        },
+        clearUserIdIAM() {
+            this.dataUsersIAM = []
+        },
+        clearUserIdDataIAM() {
+            this.dataIAM = []
         },
         // guardar un dato 
         userGet(id: string, user: string, email: string, password: string, role: string) {
@@ -88,26 +99,27 @@ export const usedataStore = defineStore({
                 ExpirationDate,
             })
         },
-        userSecretIA(iam_access_key: string, iam_user_name: string, secret_access_key: string, status: string)
-        {this.dataSecretIAM.push({
-            iam_access_key,
-            iam_user_name,
-            secret_access_key,
-            status
-        })},
+        userSecretIA(iam_access_key: string, iam_user_name: string, secret_access_key: string, status: string) {
+            this.dataSecretIAM.push({
+                iam_access_key,
+                iam_user_name,
+                secret_access_key,
+                status
+            })
+        },
         // guardar datos editados de usuarios IAM secret
-         userEditIAM(saveDataEditIAM: IduserIAM) {
-             this.dataEditIAM.push(saveDataEditIAM)
+        userEditIAM(saveDataEditIAM: IduserIAM) {
+            this.dataEditIAM.push(saveDataEditIAM)
         },
         userSecretIAM(dataSecretIAM: secretUserIAM) {
-             this.dataSecretIAM.push(dataSecretIAM)
+            this.dataSecretIAM.push(dataSecretIAM)
         },
         // eliminar un acces_key 
-    deleteAccessKey(iam_user_name: string, iam_access_key:string) {
-        this.dataSecretIAM.push({
-            iam_user_name,
-            iam_access_key,
-             })
+        deleteAccessKey(iam_user_name: string, iam_access_key: string) {
+            this.dataSecretIAM.push({
+                iam_user_name,
+                iam_access_key,
+            })
         },
         // registrar usuario 
         saveData(inputEvent) {
