@@ -76,6 +76,8 @@ const handleLogin = async () => {
             if (typeof jsonData === 'object' && jsonData !== null) {
                 data = jsonData as unknown as UserData;
                 const role = data?.data?.userDTO?.role
+                const idUser = data?.data?.userDTO?.id
+                console.log("idUser", idUser)
 
                 dataStore.setLoggedIn(role)
                 console.log("auth, login", role)
