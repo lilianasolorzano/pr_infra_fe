@@ -23,18 +23,19 @@
     </form>
 </template>
 
+
 <script lang="ts" setup>
 import { inputGlobal } from '../../importFile';
 import { globalBtn } from '../../importFile';
 import { ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
+import amplifyConfig from '../../ampliconfig';
 import { Amplify } from 'aws-amplify';
-import * as amplifyconfig from '../../amplifyconfiguration.json';
 import * as  API from 'aws-amplify/api';
 import { IdUsuario } from '../../types';
 
 const dataStore = usedataStore();
-Amplify.configure(amplifyconfig);
+Amplify.configure(amplifyConfig);
 
 const UsuarioAgr = ref<IdUsuario>({
     id: '',

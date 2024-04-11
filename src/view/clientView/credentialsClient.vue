@@ -12,11 +12,11 @@ import { computed, ref } from 'vue'
 import { tablegbl } from '../../importFile';
 import { Amplify } from 'aws-amplify';
 import * as  API from 'aws-amplify/api';
-import * as amplifyconfig from '../../amplifyconfiguration.json';
+import amplifyConfig from '../../ampliconfig';
 import { IduserIAM } from '../../types';
 
 
-Amplify.configure(amplifyconfig)
+Amplify.configure(amplifyConfig)
 const dataStore = usedataStore()
 const usersIAMClient = ref<IduserIAM[]>([])
 
