@@ -8,7 +8,7 @@
       <div>
         <router-link class="styleLink" to="/Credentials">Credentials</router-link>
       </div>
-      <global-btn btn_global="Cerrar sesion" buttonClass="alingBtn" />
+      <global-btn btn_global="Cerrar sesion" buttonClass="alingBtn" @click="logout" />
     </div>
   </nav>
 
@@ -16,6 +16,14 @@
 
 <script lang="ts" setup>
 import { globalBtn } from '../importFile';
+import router from '../router/router';
+import { usedataStore } from '../store/datoUsuario';
+const dataStore = usedataStore()
+
+const logout = () => {
+  dataStore.logout()
+  router.push("/")
+}
 </script>
 
 <style>

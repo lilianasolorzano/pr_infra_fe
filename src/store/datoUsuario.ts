@@ -172,6 +172,7 @@ export const usedataStore = defineStore({
             this.isLoggedIn = false;
             this.role = ''
             Cookies.remove('isLoggedIn');
+            Cookies.remove('role');
         },
 
     },
