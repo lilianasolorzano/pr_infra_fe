@@ -34,12 +34,8 @@ import { useRouter } from 'vue-router';
 import { inicioSesion, UserData } from '../types';
 import * as API from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
-<<<<<<< HEAD
 // import * as amplifyconfig from '../amplifyconfiguration.json'
 import { amplifyConfig } from '../importFile'
-=======
-import amplifyConfig from '../ampliconfig';
->>>>>>> master
 import { usedataStore } from '../store/datoUsuario';
 
 Amplify.configure(amplifyConfig)
