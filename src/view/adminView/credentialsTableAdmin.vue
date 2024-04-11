@@ -57,7 +57,7 @@
       <!-- <form > -->
       <v-dialog v-model="dialog2" max-width="600px">
          <v-card>
-            <v-card-title>Crear Credencial</v-card-title>
+            <v-card-title>Crear Credencial de usuario IAM</v-card-title>
             <v-card-text>
                <div>
 
