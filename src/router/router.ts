@@ -36,13 +36,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../components/editar.vue'),
     props: true
   },
-    {
-    path: '/user/:id',
-    name: 'user',
-    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
-    component: () => import('../view/adminView/user.vue'),
-    props: true
-  },
   {
     path: '/agregar',
     name: 'addNewUser',

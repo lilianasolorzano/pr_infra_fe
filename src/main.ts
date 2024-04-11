@@ -14,9 +14,15 @@ const vuetify = createVuetify({
   directives,
 });
 
+// sweetAlert 
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+
 createApp(App)
-  .use(createPinia())
-  .use(routes)
-  .use(vuetify)
-  .mount('#app');
+.use(createPinia())
+.use(routes)
+.use(vuetify)
+.use(VueSweetalert2)
+.mount('#app');
 

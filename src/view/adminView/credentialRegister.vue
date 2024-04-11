@@ -1,5 +1,5 @@
 <template>
-    <h1>agregar credencial</h1>
+    <h1>agregar credencial que no sirve este componente</h1>
     <form action="">
         <!-- seleccionar id de usuario  -->
         <label for="userId">Seleccionar Usuario:</label>

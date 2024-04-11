@@ -6,6 +6,7 @@
         <th>accion</th>
       </tr>
     </thead>
+    <!-- <v-pagination :length="4"> -->
     <tbody>
       <tr v-for="(item, index) in data" :key="index">
         <td v-for="(column, columnIndex) in columns" :key="columnIndex">{{ item[column.key] }}</td>
@@ -15,8 +16,7 @@
             @Click="handleButtonEdit(item.id)" />
           <globalBtn buttonClass="BtnEliminar" v-if="showButtonEliminar" btn_global="Eliminar"
             @click="handleButtonDelete(item.id)" />
-          <globalBtn buttonClass="BtnVisualizar" v-if="showButtonVisualizeUser" btn_global="Visualizar"
-            @click="handleButtonVisualizeUser(item.id)" />
+
           <!-- Botones de usuario IAM  -->
           <globalBtn buttonClass="BtnEliminar" v-if="showButtonEliminarIAM" btn_global="Eliminar"
             @click="handleButtonDeleteIAM(item.UserName)" />
@@ -26,7 +26,13 @@
         </td>
       </tr>
     </tbody>
+    <!-- </v-pagination> -->
   </table>
+  <div>
+    <button>Anterior</button>
+    <span>Página</span>
+    <button>Siguiente</button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -83,28 +89,6 @@ const handleButtonDelete = (Idusers: string | number) => {
   }
 };
 
-// visualizar el usuario normal 
-const handleButtonVisualizeUser = (id: string | number) => {
-  const confirmacion = confirm(`¿Estás seguro de visualizar al usuario con ID ${id}?`);
-  if (confirmacion) {
-    emit('visualizeCredUser', id);
-    console.log(`Usuario con ID ${id} visualizado`);
-  }
-  if (id) {
-    router.push({
-      // cambiar el name por el de visualizar ya que padre es solo una practica
-      name: 'user',
-      params: {
-        id: id,
-      }
-    })
-    // console.log('id', handleButtonVisualize)
-
-  } else {
-    console.error('Usuario no encontrado');
-  }
-
-};
 
 // Función para manejar el clic en el botón de visualizar, hay que checar si se crearia varios del mismo, se utilizaria varias
 

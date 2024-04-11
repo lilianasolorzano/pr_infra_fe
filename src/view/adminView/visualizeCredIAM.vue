@@ -148,11 +148,11 @@ async function handleDeleteAccess() {
         if (confirmDelete) {
             const secretUser = storeSecret.value.find((row) => row.iam_user_name !== row.iam_access_key)
             console.log('deleteFInByid', secretUser)
-            const SecretIAMDel = secretUser?.iam_access_key
+            const SecretIAMVi = secretUser?.iam_access_key
 
             const deleteSecretKey = await API.del({
                 apiName: "access_API",
-                path: `/dev/iam/delete_credential/${props.UserName}/${SecretIAMDel}`,
+                path: `/dev/iam/delete_credential/${props.UserName}/${SecretIAMVi}`,
             });
 
             console.log('restoperation', deleteSecretKey)
@@ -247,11 +247,6 @@ function AddnewAccessIAM() {
         Status: userID.value?.Status
     })
 }
-
-
-
-
-
 
 
 

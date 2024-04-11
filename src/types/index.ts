@@ -12,7 +12,8 @@ export interface IduserIAM{
     accessKeyId?:string, 
     CreateDate?:string,
     Status?:string,
-    ExpirationDate?:string,
+    dateExpiration?: string,
+    secretAcces?:string
 };
 export interface secretUserIAM{
 
@@ -21,23 +22,22 @@ export interface secretUserIAM{
     secret_access_key?: string,
     status?:string
 };
+export interface userWithOutCredential{
+    UserId?:string | number,
+    UserName?: string,
+     expirationDate?:string,
+    
+};
 
-// export interface ApiResponse {
-//   IduserIAM: IduserIAM[];
-//   secretUserIAM: secretUserIAM[];
-// }
 export interface CredentRegistIAM{
-    // hay que colocar los nombre igual que lla endpoint 
     UserId?:string | number,
     UserName?:string,
     accessKeyId?:string,
-    secretKey?: string,
-    date?: string,
-    ExpirationDate?:string,
+    secretAccess?: string,
+    dateExpiration?:string,
     
 };
 export interface CreatRegistIAM{
-    // hay que colocar los nombre igual que lla endpoint 
     UserId?:string | number,
     userName?:string,
     accessKeyId?:string,
@@ -46,24 +46,6 @@ export interface CreatRegistIAM{
     ExpirationDate?:string,
     
 };
-
-// export interface IduserIAM {
-//     UserId: string,
-//     UserName?: string,
-//     accessKeyId?: string,
-//     CreateDate?: string,
-//     Status?: string,
-//     ExpirationDate?: string,
-// };
-// export interface CredentRegistIAM {
-//     // hay que colocar los nombre igual que lla endpoint 
-//     UserId?: string | number,
-//     userName?: string,
-//     accessKeyId?: string,
-//     secretKey?: string,
-//     date?: string,
-//     ExpirationDate?: string,
-// };
 export interface inicioSesion {
     user: string,
     password: string
