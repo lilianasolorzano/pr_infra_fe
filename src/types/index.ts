@@ -15,12 +15,12 @@ export interface IduserIAM{
     dateExpiration?: string,
     secretAcces?:string
 };
-export interface secretUserIAM{
+export interface secretUserIAM {
 
-    iam_user_name ?: string,
+    iam_user_name?: string,
     iam_access_key?: string,
     secret_access_key?: string,
-    status?:string
+    status?: string
 };
 export interface userWithOutCredential{
     UserId?:string | number,
@@ -43,8 +43,8 @@ export interface CreatRegistIAM{
     accessKeyId?:string,
     secretKey?: string,
     date?: string,
-    ExpirationDate?:string,
-    
+    ExpirationDate?: string,
+
 };
 export interface inicioSesion {
     user: string,

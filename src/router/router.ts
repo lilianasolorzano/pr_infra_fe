@@ -37,6 +37,13 @@ const routes: RouteRecordRaw[] = [
     props: true
   },
   {
+    path: '/user/:id',
+    name: 'user',
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
+    component: () => import('../view/adminView/usuarios.vue'),
+    props: true
+  },
+  {
     path: '/agregar',
     name: 'addNewUser',
     meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
@@ -55,12 +62,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../view/adminView/credentialsCreate.vue')
   },
   {
-        path: '/VisualizeIAM/:UserName',
-        name: 'visualizeCredIAM',
-        meta: { requiresAdmin: true },
-        component: () => import('../view/adminView/visualizeCredIAM.vue'),
-        props: true
-    },
+    path: '/VisualizeIAM/:UserName',
+    name: 'visualizeCredIAM',
+    meta: { requiresAdmin: true },
+    component: () => import('../view/adminView/visualizeCredIAM.vue'),
+    props: true
+  },
   {
     path: '/clientView',
     name: 'client',
@@ -92,14 +99,14 @@ router.beforeEach((to, _from, next) => {
   console.log("Valor de la variable en router.ts", isLoggedInValue)
   console.log("Valor de la variable en role", isRole)
 
-  // /*  const isAuthorized =
-  //    (!to.meta.requiresAuth || isLoggedInValue) &&
-  //    (!to.name || isLoggedInValue) &&
-  //    (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
-  //    (!to.meta.requiresUser || isRole === 'INVITADO');
-
-  //  // Redirige al usuario a la página Forbidden si no está autorizado
-  //  isAuthorized ? next() : next({ name: 'Forbidden' }); */
+  /*  const isAuthorized =
+     (!to.meta.requiresAuth || isLoggedInValue) &&
+     (!to.name || isLoggedInValue) &&
+     (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
+     (!to.meta.requiresUser || isRole === 'INVITADO');
+ 
+   // Redirige al usuario a la página Forbidden si no está autorizado
+   isAuthorized ? next() : next({ name: 'Forbidden' }); */
 
   type RolePaths = {
     ADMIN: string;
