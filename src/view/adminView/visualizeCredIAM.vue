@@ -9,7 +9,7 @@
             <v-list-item v-for="(secret, index) in dataStore.dataSecretIAM" :key="index" @click="toggleInfo">
                 <v-list-item-title @click="toggleInfo; handleShow(secret.iam_access_key, index)">Mostrar Secret Key {{
                     index + 1
-                    }}</v-list-item-title>
+                }}</v-list-item-title>
             </v-list-item>
         </v-list>
     </v-menu>
@@ -402,6 +402,7 @@ const createdCredSecond = async () => {
 .style_table {
     width: 100%;
     border-collapse: collapse;
+    text-transform: none
 }
 
 .style_table th,
