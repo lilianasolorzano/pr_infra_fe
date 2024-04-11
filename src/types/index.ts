@@ -73,6 +73,7 @@ export interface inicioSesion {
 export interface UserData {
     data: {
         userDTO: {
+            id: number,
             role: string;
         };
     };
