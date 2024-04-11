@@ -1,16 +1,16 @@
 <template>
-    <v-btn @click="onClick">
-        <button @click="handleClick" :class="buttonClass">{{ btn_global}}</button>
-    </v-btn>
+    <btn @click="onClick">
+        <button @click="handleClick" :class="buttonClass" class="btn_agr">{{ btn_global }}</button>
+    </btn>
 </template>
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
 const props = defineProps({
-    btn_global:String,
-    stopEvent:{
-        type:[Boolean, String],
+    btn_global: String,
+    stopEvent: {
+        type: [Boolean, String],
         default: false,
     },
     buttonClass: String,
@@ -24,12 +24,12 @@ const handleClick = () => {
 const emit = defineEmits()
 console.log(handleClick)
 
-emit( 'cambiar nombre','nuevo nombre del boton')
-const onClick = () =>{
-    if(props.stopEvent){
+emit('cambiar nombre', 'nuevo nombre del boton')
+const onClick = () => {
+    if (props.stopEvent) {
         console.log('eventonclick');
         // handleClick.value?.login
-    }else{
+    } else {
         console.log('eventonclick no');
         // myform.value?.submit();
     }
@@ -37,11 +37,18 @@ const onClick = () =>{
 
 </script>
 
-<style scoped>
-.btn_agr{
-  align-content: center;
-  background-color: blue;
-  color: white;
-}
+<style>
+.btn_agr {
+    align-content: center;
+    color: #333;
+    /* border: 2px solid #333; */
+    border-radius: 5px;
+    margin: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 
+
+}
 </style>

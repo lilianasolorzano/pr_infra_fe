@@ -1,15 +1,28 @@
 <template>
-    <h1>Inicio de Sesion</h1>
-    <form @submit.prevent="handleLogin">
-        <input-global title="" name="Nombre de usuario" v-model="loginDetails.user"
-            @update:value="newValue => updateI('user', newValue)" />
-        <input-global title="" name="password" v-model="loginDetails.password"
-            @update:value="newValue => updateI('password', newValue)" />
-        <div>
-            <global-btn type="submit" btn_global="Iniciar sesion" />
+    <div class="body">
+        <div class="img_palace">
+            <img src="../../public/img//palace_resorts_logo-removebg-preview2.png" alt="Imagen The palace company"
+                class="img-center">
         </div>
-        <p v-if="errorMessages">{{ errorMessages }}</p>
-    </form>
+        <div class="line"></div>
+        <!-- <h1>The Palace Company </h1> -->
+
+        <form @submit.prevent="handleLogin" class="cristal">
+            <h2>Bienvenido</h2>
+            <v-icon icon="mdi-account" color="#fff" size="30" class="icon" />
+            <input-global title="" name="Nombre de usuario" v-model="loginDetails.user"
+                @update:value="newValue => updateI('user', newValue)" />
+
+
+            <v-icon icon="mdi-lock" color="#fff" size="30" />
+            <input-global title="" name="Contraseña" v-model="loginDetails.password"
+                @update:value="newValue => updateI('password', newValue)" />
+            <div class="alingbutton">
+                <global-btn type="submit" btn_global="Iniciar sesion" />
+            </div>
+            <p v-if="errorMessages">{{ errorMessages }}</p>
+        </form>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -21,8 +34,12 @@ import { useRouter } from 'vue-router';
 import { inicioSesion, UserData } from '../types';
 import * as API from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
+<<<<<<< HEAD
 // import * as amplifyconfig from '../amplifyconfiguration.json'
 import { amplifyConfig } from '../importFile'
+=======
+import amplifyConfig from '../ampliconfig';
+>>>>>>> master
 import { usedataStore } from '../store/datoUsuario';
 
 Amplify.configure(amplifyConfig)
@@ -68,7 +85,7 @@ const handleLogin = async () => {
                 console.log("auth, login", role)
 
                 const roleRoutes = {
-                    'ADMIN': '/Home',
+                    'ADMIN': '/users',
                     'INVITADO': '/clientView'
                 };
 
@@ -92,8 +109,7 @@ const handleLogin = async () => {
 
     } catch (errorMessages) {
         errorMessages = 'Nombre del usuario y/o contraseña incorrecta';
-        alert(errorMessages)
-
+        // alert(errorMessages)
     }
 };
 
@@ -104,4 +120,122 @@ const updateI = (fielName: string, value: string) => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.body {
+    background-color: #145474;
+    /* background-color: black; */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* flex-direction: initial; */
+}
+
+/* checar si iria esta clase de imagen, debido a que esta tambien el body centrado y no seria necesario la class de img   */
+.img_palace {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+}
+
+.img-center {
+    width: 250px;
+    height: 250px;
+    /* max-width: 100%;
+    max-height: 100%; */
+    margin-right: 50%;
+}
+
+h2 {
+    font-family: Verdana, Tahoma, sans-serif;
+    font-size: 40px;
+    text-align: center;
+    background: linear-gradient(to right, rgba(20,
+                84,
+                116,
+                1), #fff 50%, #6C6B6C);
+    /* box-shadow: 0 0 10px rgba(20, 84, 116, 1); */
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 3s linear infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 75%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 70%;
+    }
+
+}
+
+form {
+    background-color: rgba(225, 225, 225, 0.2);
+    animation: brillo 2s ease-in-out infinite alternate;
+    color: #fff;
+    align-content: center;
+    border: 3px solid #ccc;
+    border-radius: 10px;
+    width: 500px;
+    height: auto;
+    margin: 100px;
+    padding: 70px;
+    /* flex: 1; */
+}
+
+/* @keyframes brillo { */
+/* from {
+        background-color: rgba(225, 225, 225, 0.2);
+        box-shadow: 0 0 10px rgba(225, 225, 225, 0.2);
+        /* Añade sombra para el efecto de brillo */
+/* }  */
+
+/* to {
+        background-color: rgba(225, 225, 225, 0.8);
+        /* Ajusta el valor de opacidad según sea necesario */
+/* box-shadow: 0 0 20px rgba(225, 225, 225, 0.8); */
+/* Ajusta el tamaño de la sombra según sea necesario */
+/* }  */
+/* } */
+
+
+.cristal {
+    /* Fondo con color semi-transparente */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Blanco semi-transparente */
+    /* Ajusta el valor alfa (0.5) según la opacidad deseada */
+
+    /* Borde con sombra para resaltar el efecto de cristal */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Borde blanco semi-transparente */
+    /* Ajusta el valor alfa (0.2) según la opacidad deseada */
+
+    /* Sombra para resaltar el efecto de cristal */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Sombra con opacidad (0.2) */
+}
+
+.line {
+    border-left: 2px solid #ccc;
+    height: 300px;
+    /* Altura de la línea vertical */
+    margin: 0 100px;
+    /* Espacio entre la línea y los elementos */
+}
+
+.alingbutton {
+    align-items: center;
+}
+
+.global-btn ::btn_global {
+    font-family: 'Courier New', Courier, monospace;
+}
+</style>
