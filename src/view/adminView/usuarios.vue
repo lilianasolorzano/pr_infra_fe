@@ -17,38 +17,41 @@
 
   <!-- Ventana modal -->
   <form @submit.prevent="AddnewUser">
-    <v-dialog v-model="dialog" max-width="600px">
-      <v-card>
-        <v-card-title>Agregar Nueva Usuario</v-card-title>
-        <v-card-text>
-          <div>
-            <input-global title="" type="text" id="UserName" v-model="UsuarioAgr.user"
-              @update:value="newValue => updateI('user', newValue)" name="nombre de usuario" />
-          </div>
-          <div>
-            <input-global title="" type="email" id="UserEmail" v-model="UsuarioAgr.email"
-              @update:value="newValue => updateI('email', newValue)" name="email" />
-          </div>
-          <div>
-            <input-global title="" type="password" id="password" v-model="UsuarioAgr.password"
-              @update:value="newValue => updateI('password', newValue)" name="password" />
-          </div>
-          <div>
-            <!-- <UserRol type="text" id="UserRol" v-model="UsuarioAgr.role" /> -->
-            <v-select title="" id="UserRol" :items="['admin', 'invitado']" v-model="selectedOption" />
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <!-- <div @click="showAlertAgrUserExit"> -->
-          <v-btn color="primary" @click="mostrarMensajeTempral">
-            <global-btn btn_global="Regitrar" :stop-event="true" @click="CreateUserLo" />
-          </v-btn>
-          <!-- </div> -->
-          <!-- <v-btn color="primary" @click="agregarCredencial">Guardar</v-btn> -->
-          <v-btn @click="dialog = false">Cancelar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <div class="modal-content">
+      <v-dialog v-model="dialog" max-width="600px" class="modal">
+        <v-card>
+          <v-card-title>Agregar Nueva Usuario</v-card-title>
+          <v-card-text>
+            <div>
+              <input-global title="" type="text" id="UserName" v-model="UsuarioAgr.user"
+                @update:value="newValue => updateI('user', newValue)" name="nombre de usuario" />
+            </div>
+            <div>
+              <input-global title="" type="email" id="UserEmail" v-model="UsuarioAgr.email"
+                @update:value="newValue => updateI('email', newValue)" name="email" />
+            </div>
+            <div>
+              <input-global title="" type="password" id="password" v-model="UsuarioAgr.password"
+                @update:value="newValue => updateI('password', newValue)" name="password" />
+            </div>
+            <div>
+
+              <div>
+                <v-select title="" id="UserRol" :items="['ADMIN', 'INVITADO']" v-model="selectedOption"
+                  style="width: 550px;" />
+              </div>
+
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="mostrarMensajeTempral">
+              <v-btn :stop-event="true" @click="CreateUserLo">Guardar</v-btn>
+            </v-btn>
+            <v-btn @click="dialog = false">Cancelar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
   </form>
   <!-- boton de alerta  -->
   <!-- <button @click="showAlert">Hello world</button> -->
@@ -188,23 +191,6 @@ const handleDeleteJSON = async (Idusers: string | number) => {
   }
 };
 
-// mensaje de usuario agregado
-// function showAlertAgrUserExit() {
-//   Swal.fire({
-//     html: '<div style="width: 100%; height: 200px;">El usuario ha sido agregado de manera exitosa</div>',
-//     // text: "El usuario ha sido agregado de manera exitosa",
-//     position: "top",
-//     imageHeight: 100,
-//     icon: "success",
-//     showConfirmButton: false,
-//     timer: 1500,
-//     // customClass: {
-//     //   container: 'custom-swal-container'
-//     // }
-//   });
-// }
-
-
 
 // mensaje de accion Usuario registrado
 const mensaje = ref('');
@@ -280,8 +266,6 @@ function AddnewUser() {
 };
 
 
-// Llama a la función para ocultar el mensaje después de que el componente se monte
-// onMounted(ocultarMensaje);
 </script>
 
 
@@ -291,27 +275,18 @@ function AddnewUser() {
 .styleBUser {
   background-color: #145474;
   font-size: 13px;
-  /* text-decoration: underline; */
   color: white;
-  /* border: 2px solid black; */
   border-radius: 10px;
   height: 40px;
   width: 140px;
   text-decoration: none;
-  /* padding: 10px;
-  padding-bottom: 10px; */
   position: relative;
   margin-left: 5%;
   margin-top: 50px;
 }
 
 .textUser {
-  /* background-image: url("../../../public/img/istockphoto-1130707008-612x612.jpg"); */
-  /* background-size: cover;
-  background-clip: text; */
-  /* -webkit-background-clip: text; */
   display: flex;
-  /* color: white; */
   margin-left: 5%;
   margin-top: 40px;
 }
@@ -328,5 +303,61 @@ function AddnewUser() {
   to {
     opacity: 0;
   }
+}
+
+/* estilo de ventana modal  */
+
+.modal {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(20, 84, 116, 0.2);
+}
+
+/* Estilos del contenido de la modal */
+.modal-content {
+  align-items: center;
+  /* background-color: #fefefe; */
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 700px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Sombra */
+}
+
+/* Estilos del botón para cerrar la modal */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.input-select {
+  width: 550px;
+  height: 55px;
+  padding: 8px;
+  margin-bottom: 25px;
+  margin-top: 3px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+.input-select option {
+  background-color: #fff;
+  color: #145474;
 }
 </style>

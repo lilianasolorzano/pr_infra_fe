@@ -1,11 +1,4 @@
 <template>
-   <v-alert v-show="mostrarMensajeAgr" type="success" dismissible class="fade-out-message">
-      {{ mensajeAgr }}
-   </v-alert>
-   <v-alert v-show="mostrarMensajeAgrError">{{ mensajeAgrError }}</v-alert>
-
-
-
    <v-alert v-show="mostrarMensajeCreadCred" type="success" dismissible class="fade-out-message">
       {{ mensajeCreadCred }}
    </v-alert>
@@ -15,7 +8,9 @@
 
 
    <h1>Usuarios IAM</h1>
-   <global-btn btn_global="Agregar credencial" buttonClass="agrBtnCred" dark @click="dialog1 = true" />
+   <router-link to="/AgrNewCred">
+      <global-btn btn_global="Agregar credencial" buttonClass="agrBtnCred" dark />
+   </router-link>
    <global-btn btn_global="Crear credencial" buttonClass="regBtnCred" dark @click="dialog2 = true" />
    <global-btn btn_global="Crear usuario IAM" buttonClass="regBtnCred" dark @click="dialog3 = true" />
 
@@ -25,96 +20,60 @@
          @visualizeCredUser="handleVisualizeIAM" />
    </div>
 
-   <!-- Ventana modal para agregar nueva credencial-->
-   <form @submit.prevent="AgrnewCredUserIAM">
-      <v-dialog v-model="dialog1" max-width="600px">
-         <v-card>
-            <v-card-title>Agregar Nueva Credencial</v-card-title>
-            <v-card-text>
-               <div>
-                  <select v-model="selectedUserName" id="user" @change="filterAgrCredUser">
-                     <option value="">Seleccione un usuario...</option>
-                     <option v-for="datos in userListRegIAM" :key="datos.UserName" :value="datos.UserName">{{
-                        datos.UserName
-                     }}
-                     </option>
-                  </select>
-               </div>
-
-               <!-- Contenido del formulario para agregar la credencial -->
-               <input-global title="" name="Id de usuario " :value="registCredential.UserId"
-                  @update:value="newValue => updateAgrCred('UserId', newValue)" />
-
-               <input-global title="" name=" Llave de accesos IAM" :value="registCredential.accessKeyId"
-                  @update:value="newValue => updateAgrCred('accessKeyId', newValue)" />
-
-               <input-global title="" name="Llave secreta" :value="registCredential.secretAccess"
-                  @update:value="newValue => updateAgrCred('secretAccess', newValue)" />
-
-               <input-global title="" name="Fecha de expiracion" :value="registCredential.dateExpiration"
-                  @update:value="newValue => updateAgrCred('dateExpiration', newValue)" />
-
-
-            </v-card-text>
-            <v-card-actions>
-               <div @click="">
-                  <v-btn color="primary" @click="AgrCredential">Guardar</v-btn>
-               </div>
-               <v-btn @click="dialog1 = false">Cancelar</v-btn>
-            </v-card-actions>
-         </v-card>
-      </v-dialog>
-   </form>
 
 
    <!-- ventana modal para crear credenciales  -->
    <form @submit.prevent="AddnewCredUserIAM">
       <!-- <form > -->
-      <v-dialog v-model="dialog2" max-width="600px">
-         <v-card>
-            <v-card-title>Crear Credencial de usuario IAM</v-card-title>
-            <v-card-text>
-               <div>
-                  <select v-model="selectedUserName" id="user" @change="fillCreatCred">
-                     <option value="">Seleccione un usuario...</option>
-                     <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="dato.UserName">{{
-                        dato.UserName
-                     }}
-                     </option>
-                  </select>
-               </div>
-            </v-card-text>
-            <v-card-actions>
-               <div @click="mostrarMensajeTempralCreadCred">
-                  <v-btn color="primary" @click="CreateCredential">Guardar</v-btn>
-               </div>
-               <v-btn @click="dialog2 = false">Cancelar</v-btn>
-            </v-card-actions>
-         </v-card>
-      </v-dialog>
+      <div class="modal-content">
+
+         <v-dialog v-model="dialog2" max-width="600px" class="modal">
+            <v-card>
+               <v-card-title>Crear Credencial de Usuario IAM</v-card-title>
+               <v-card-text>
+                  <div>
+                     <select v-model="selectedUserName" id="user" @change="fillCreatCred" class="custom-select">
+                        <option value="">Seleccione un usuario...</option>
+                        <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="dato.UserName">{{
+      dato.UserName
+   }}
+                        </option>
+                     </select>
+                  </div>
+               </v-card-text>
+               <v-card-actions>
+                  <div @click="mostrarMensajeTempralCreadCred">
+                     <v-btn color="primary" @click="CreateCredential">Guardar</v-btn>
+                  </div>
+                  <v-btn @click="dialog2 = false">Cancelar</v-btn>
+               </v-card-actions>
+            </v-card>
+         </v-dialog>
+      </div>
    </form>
 
 
    <!-- ventana modal para crear un usuario IAM  -->
    <form @submit.prevent="AddnewUser">
-      <v-dialog v-model="dialog3" max-width="600px">
-         <v-card>
-            <v-card-title>Crear Usuario IAM</v-card-title>
-            <v-card-text>
-               <div>
-                  <input-global title="" type="text" id="userName" v-model="usuarioIAM.userName"
-                     @update:value="newValue => updateIAM('userName', newValue)" name="nombre de usuario" />
-               </div>
-
-            </v-card-text>
-            <v-card-actions>
-               <div @click="mostrarMensajeTempralCredUserIAM">
-                  <v-btn color="primary" @click="createUserIAM">Guardar</v-btn>
-               </div>
-               <v-btn @click="dialog3 = false">Cancelar</v-btn>
-            </v-card-actions>
-         </v-card>
-      </v-dialog>
+      <div class="modal-content">
+         <v-dialog v-model="dialog3" max-width="600px" class="modal">
+            <v-card>
+               <v-card-title>Crear Usuario IAM</v-card-title>
+               <v-card-text>
+                  <div>
+                     <input-global title="" type="text" id="userName" v-model="usuarioIAM.userName"
+                        @update:value="newValue => updateIAM('userName', newValue)" name="nombre de usuario" />
+                  </div>
+               </v-card-text>
+               <v-card-actions>
+                  <div @click="mostrarMensajeTempralCredUserIAM">
+                     <v-btn color="primary" @click="createUserIAM">Guardar</v-btn>
+                  </div>
+                  <v-btn @click="dialog3 = false">Cancelar</v-btn>
+               </v-card-actions>
+            </v-card>
+         </v-dialog>
+      </div>
    </form>
 </template>
 
@@ -143,8 +102,6 @@ const getIAM = async () => {
    try {
       const getUser = await API.get({
          apiName: 'access_API',
-         // mandar in id de el usuario que inicio sesion 
-         // path: '/dev/iam/getUserCredential/1',
          path: '/dev/iam/findAll',
          options: {
             body: {
@@ -187,7 +144,6 @@ onMounted(() => {
    getIAM()
 }
 )
-
 
 const columns = [
    { label: 'Usuario IAM', key: 'UserName' },
@@ -254,158 +210,6 @@ const handleVisualizeIAM = (UserName: string | number) => {
 
 
 
-// mensaje de accion credencial agregado
-const mensajeAgr = ref('');
-const mostrarMensajeAgr = ref<boolean>(false);
-const mostrarMensajeTempralAgr = () => {
-   mostrarMensajeAgr.value = true;
-   setTimeout(() => {
-      mostrarMensajeAgr.value = true;
-   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
-}
-
-// mensaje de error a la credencial agregado
-
-const mensajeAgrError = ref('');
-const mostrarMensajeAgrError = ref<boolean>(false);
-const mostrarMensajeTempralAgrError = () => {
-   mostrarMensajeAgrError.value = true;
-   setTimeout(() => {
-      mostrarMensajeAgrError.value = true;
-   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
-}
-
-
-// ventana modal para Agregar nuevas credenciales
-const dialog1 = ref(false);
-
-const selectedUserName = ref<string>('');
-const userListRegIAM = ref<CredentRegistIAM[]>([]);
-const registCredential = ref<CredentRegistIAM>({
-   UserName: '',
-   accessKeyId: '',
-   secretAccess: '',
-   dateExpiration: ''
-})
-
-
-// obtencial de datos de las credenciales a agregar 
-async function fetchUsersData() {
-   try {
-      const getUserIAM = await API.get({
-         apiName: 'access_API',
-         path: `/dev/iam/findAllWithCredential`,
-         options: {
-            body: "message"
-         }
-      });
-      const { body } = await getUserIAM.response;
-      const data = await body?.json();
-      console.log('getUserIAM', data);
-      if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
-
-         userListRegIAM.value = data.data as unknown as CredentRegistIAM[];
-
-         userListRegIAM.value.forEach((IAMcredential) => {
-            dataStore.registCredentialIAM(
-               IAMcredential.UserId as string,
-               IAMcredential.UserName as string,
-               IAMcredential.accessKeyId as string,
-               IAMcredential.secretAccess as string,
-               IAMcredential.dateExpiration as string,
-            )
-         });
-      } else {
-         userListRegIAM.value = []
-      }
-   } catch (error) {
-      console.error('Error fetching users:', error);
-   }
-};
-
-// filtro de id de las credenciales creadas
-const filterAgrCredUser = () => {
-   const selectedUser = userListRegIAM.value.find(user => user.UserName === selectedUserName.value);
-   if (selectedUser) {
-      registCredential.value.UserName = selectedUser.UserName;
-      registCredential.value.UserId = selectedUser.UserId;
-      registCredential.value.accessKeyId = selectedUser.accessKeyId;
-      registCredential.value.secretAccess = selectedUser.secretAccess;
-      registCredential.value.dateExpiration = selectedUser.dateExpiration;
-   }
-};
-
-// Lógica para agregar la credencial
-const agregarCredencial = () => {
-   console.log('Credencial agregada', agregarCredencial);
-   dialog1.value = false; // Cierra la ventana modal
-};
-
-
-// metod put para enviar los datos y agregar la credencial a la tabla 
-const registerCredIAMuser = async () => {
-   try {
-      const response = await API.put({
-         apiName: 'access_API',
-         // AGREGAR ID DE USUARIO QUE INICIO SESION 
-         path: `/dev/iam/addListIam/${registCredential.value.UserName}/1`,
-      });
-
-      const body = await response.response
-      const data = body.body.json()
-
-      if (data) {
-         console.log('Credencial agregada');
-         dialog1.value = false; // Cierra la ventana modal
-         console.log('agregate call succeeded');
-         mostrarMensajeTempralAgr()
-         mensajeAgr.value = 'Credencial agregado exitosamente'
-      }
-   } catch (error) {
-      console.log('agregate call failed: ', error);
-      mostrarMensajeTempralAgrError()
-      mensajeAgrError.value = 'Error: La credencial no fue agregada con exito'
-
-   } finally {
-
-   }
-}
-
-const updateAgrCred = (fielName: string, value: string) => {
-   registCredential.value = { ...registCredential.value, [fielName]: value }
-   console.log('datos agregados', registCredential.value)
-}
-
-onMounted(() => {
-   // registerCredIAMuser()
-   fetchUsersData();
-});
-
-function AgrnewCredUserIAM() {
-   dataStore.saveRegCredentialIAM(
-      registCredential.value.UserName as string,
-   )
-   ClearUser()
-}
-function ClearUser() {
-   registCredential.value.UserName = '';
-   registCredential.value.accessKeyId = '';
-   registCredential.value.secretAccess = '';
-   registCredential.value.dateExpiration = '';
-   registCredential.value.UserId = '';
-
-}
-const AgrCredential = async (fielName: string, value: string) => {
-   updateAgrCred(fielName, value)
-   await registerCredIAMuser()
-   router.push('/credentials')
-}
-
-
-
-
-
-
 
 
 
@@ -429,6 +233,9 @@ const creatIAM = ref<userWithOutCredential>({
 })
 
 // obtencion del enlistado para creacion de credenciales a usuarios IAM 
+const selectedUserName = ref<string>('');
+const userListRegIAM = ref<CredentRegistIAM[]>([]);
+
 async function getUsersIAM() {
    try {
       const getUser = await API.get({
@@ -579,6 +386,30 @@ h1 {
    padding-left: 5%;
 }
 
+.modal {
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   overflow: auto;
+   background-color: rgb(20, 84, 116, 0.2);
+}
+
+/* Estilos del contenido de la modal */
+.modal-content {
+   align-items: center;
+   background-color: #fefefe;
+   margin: 10% auto;
+   padding: 20px;
+   border: 1px solid #888;
+   width: 80%;
+   max-width: 700px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+   /* Sombra */
+}
+
+
+
 .agrBtnCred {
    background-color: #145474;
    font-size: 13px;
@@ -603,5 +434,22 @@ h1 {
    text-decoration: none;
    position: relative;
    margin-top: 50px;
+}
+
+.custom-select {
+   width: 500px;
+   height: 55px;
+   padding: 8px;
+   margin-bottom: 25px;
+   margin-top: 20px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   background-color: #fff;
+   font-size: 16px;
+}
+
+.custom-select option {
+   background-color: #fff;
+   color: #145474;
 }
 </style>
