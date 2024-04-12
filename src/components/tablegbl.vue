@@ -39,6 +39,11 @@
 import { defineProps } from 'vue';
 import { globalBtn } from '../importFile';
 import router from '../router/router';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
+
+
+
 
 const emit = defineEmits()
 const props = defineProps({
@@ -59,12 +64,8 @@ props
 
 // Función para manejar el clic en el botón de editar
 const handleButtonEdit = (id: string | number) => {
-  const confirmacion = confirm(`¿Estás seguro de editar al usuario con ID ${id}?`);
-  if (confirmacion) {
-    emit('editUser', id);
-    console.log(`Usuario con ID ${id} editado`);
-    // const user = idUsers.value.find(user => user.id === Idusers)
-  }
+  emit('editUser', id);
+  console.log(`Usuario con ID ${id} editado`);
 
   if (id) {
     router.push({
@@ -80,24 +81,41 @@ const handleButtonEdit = (id: string | number) => {
   }
 };
 
+
 // Función para manejar el clic en el botón de eliminar
 const handleButtonDelete = (Idusers: string | number) => {
-  const confirmacion = confirm(`¿Estás seguro de eliminar al usuario con ID ${Idusers}?`);
-  if (confirmacion) {
-    emit('deleteUser', Idusers);
-    console.log(`Usuario con ID ${Idusers} eliminado`);
-  }
+
+  // function showAlertDelete() {
+  Swal.fire({
+    text: "¿Está seguro de eliminar al usuario?",
+    // position: "top-end",
+    position: "center",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Aceptar",
+    // preConfirm: async
+  }).then((result) => { // Usa el método `then` para manejar la respuesta del usuario
+    if (result.isConfirmed) { // Si el usuario confirma la acción
+      emit('deleteUser', Idusers);
+      console.log(`Usuario con ID ${Idusers} eliminado`);
+      // handleDeleteJSON;
+      // console.log('usuario eliminado con exito')
+      // Llama a la función para eliminar el usuario
+    }
+  });
+  // }
+
+
 };
 
 
 // Función para manejar el clic en el botón de visualizar, hay que checar si se crearia varios del mismo, se utilizaria varias
 
 const handleButtonVisualize = (UserName: string | number) => {
-  const confirmacion = confirm(`¿Estás seguro de visualizar al usuario con ID ${UserName}?`);
-  if (confirmacion) {
-    emit('visualizeCredUser', UserName);
-    console.log(`Usuario con ID ${UserName} visualizado`);
-  }
+  emit('visualizeCredUser', UserName);
+  console.log(`Usuario con ID ${UserName} visualizado`);
   if (UserName) {
     router.push({
       // cambiar el name por el de visualizar ya que padre es solo una practica
@@ -115,11 +133,28 @@ const handleButtonVisualize = (UserName: string | number) => {
 };
 
 const handleButtonDeleteIAM = (UserName: string | number) => {
-  const confirmacion = confirm(`¿Estás seguro de Eliminar al usuario ${UserName}?`);
-  if (confirmacion) {
-    emit('deleteIAM', UserName);
-    console.log(`Usuario  ${UserName} Eliminado`);
-  }
+  Swal.fire({
+    text: `¿Está seguro de eliminar al usuario  ${UserName}?`,
+    // position: "top-end",
+    position: "center",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Aceptar",
+    // preConfirm: async
+  }).then((result) => { // Usa el método `then` para manejar la respuesta del usuario
+    if (result.isConfirmed) { // Si el usuario confirma la acción
+      emit('deleteIAM', UserName);
+
+      console.log(`Usuario  ${UserName} Eliminado`);
+    }
+  });
+  // const confirmacion = confirm(`¿Estás seguro de Eliminar al usuario ${UserName}?`);
+  // if (confirmacion) {
+  //   emit('deleteIAM', UserName);
+  //   console.log(`Usuario  ${UserName} Eliminado`);
+  // }
 };
 
 

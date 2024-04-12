@@ -1,7 +1,13 @@
 <template>
-  <v-alert v-if="mensaje" type="success" dismissible>
+  <!-- componer el alert  -->
+  <v-alert v-show="mostrarMensaje" type="success" dismissible class="fade-out-message">
     {{ mensaje }}
   </v-alert>
+
+  <v-alert v-show="mostrarMensajeDel" type="error" dismissible class="fade-out-message">
+    {{ mensajeDel }}
+  </v-alert>
+
   <h1 class="textUser">Usuarios</h1>
   <global-btn btn_global="Agregar usuario" buttonClass="styleBUser" dark @click="dialog = true" />
   <div>
@@ -33,19 +39,19 @@
           </div>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary">
-            <global-btn btn_global="Regitrar" :stop-event="true" @click="CreateCredential" />
+          <!-- <div @click="showAlertAgrUserExit"> -->
+          <v-btn color="primary" @click="mostrarMensajeTempral">
+            <global-btn btn_global="Regitrar" :stop-event="true" @click="CreateUserLo" />
           </v-btn>
+          <!-- </div> -->
           <!-- <v-btn color="primary" @click="agregarCredencial">Guardar</v-btn> -->
           <v-btn @click="dialog = false">Cancelar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </form>
-
-
-
-  <button @click="showAlert">Hello world</button>
+  <!-- boton de alerta  -->
+  <!-- <button @click="showAlert">Hello world</button> -->
 </template>
 
 
@@ -61,30 +67,8 @@ import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
 import router from '../../router/router';
 import { inputGlobal } from '../../importFile';
-import Swal from 'sweetalert2/dist/sweetalert2.js'
-import 'sweetalert2/src/sweetalert2.scss'
 
 
-function showAlert() {
-  // $swal('Hello Vue world!!!');
-  // swal('Hello Vue world!!!');
-  Swal.fire({
-    title: "Enter your IP address",
-    input: "text",
-    inputLabel: "Your IP address",
-    showCancelButton: true,
-  });
-
-}
-
-// export default {
-// methods: {
-//   showAlert() {
-//     this.$swal('Hello Vue world!!!');
-
-//     // Use sweetalert2
-//   }
-// }
 
 
 Amplify.configure(amplifyConfig);
@@ -161,13 +145,26 @@ const handleEdit = (id: string) => {
 
 }
 
-async function handleDeleteJSON(Idusers: string | number) {
+
+// mensaje de accion Usuario eliminado
+const mensajeDel = ref('')
+const mostrarMensajeDel = ref<boolean>(false);
+const mostrarMensajeTempralDel = () => {
+  mostrarMensajeDel.value = true;
+  setTimeout(() => {
+    mostrarMensajeDel.value = true;
+  }, 5000);
+}
+
+// eliminacion de usuario 
+const handleDeleteJSON = async (Idusers: string | number) => {
   try {
     const restOperation = await API.del({
       apiName: "access_API",
       path: `/dev/users/delete/${Idusers}`,
     });
     await restOperation.response
+    mensajeDel.value = 'Usuario eliminado';
 
     idUsers.value = idUsers.value.filter((row) => row.id !== Idusers)
     dataStore.clearUserIds();
@@ -180,7 +177,7 @@ async function handleDeleteJSON(Idusers: string | number) {
         getUser.password as string,
         getUser.role as string,
       )
-
+      mostrarMensajeTempralDel()
     })
     console.log('user deleted successfully:', Idusers);
   } catch (error) {
@@ -188,10 +185,36 @@ async function handleDeleteJSON(Idusers: string | number) {
   }
 };
 
+// mensaje de usuario agregado
+// function showAlertAgrUserExit() {
+//   Swal.fire({
+//     html: '<div style="width: 100%; height: 200px;">El usuario ha sido agregado de manera exitosa</div>',
+//     // text: "El usuario ha sido agregado de manera exitosa",
+//     position: "top",
+//     imageHeight: 100,
+//     icon: "success",
+//     showConfirmButton: false,
+//     timer: 1500,
+//     // customClass: {
+//     //   container: 'custom-swal-container'
+//     // }
+//   });
+// }
+
+
+
+// mensaje de accion Usuario registrado
+const mensaje = ref('');
+const mostrarMensaje = ref<boolean>(false);
+const mostrarMensajeTempral = () => {
+  mostrarMensaje.value = true;
+  setTimeout(() => {
+    mostrarMensaje.value = true;
+  }, 5000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
+}
 
 // ventana modal de agregar usuario IAM 
 const dialog = ref(false);
-const mensaje = ref('');
 const selectedOption = ref('select...');
 const UsuarioAgr = ref<IdUsuario>({
   id: '',
@@ -232,7 +255,7 @@ const updateI = (fielName: string, value: string) => {
   console.log('datos agregados', UsuarioAgr.value)
 }
 
-const CreateCredential = async (fielName: string, value: string) => {
+const CreateUserLo = async (fielName: string, value: string) => {
   updateI(fielName, value)
   await createUser()
   router.push('/Users')
@@ -252,6 +275,10 @@ function AddnewUser() {
   console.log(UsuarioAgr.value.password)
   console.log(UsuarioAgr.value.role)
 };
+
+
+// Llama a la función para ocultar el mensaje después de que el componente se monte
+// onMounted(ocultarMensaje);
 </script>
 
 
@@ -284,5 +311,19 @@ function AddnewUser() {
   /* color: white; */
   margin-left: 5%;
   margin-top: 40px;
+}
+
+.fade-out-message {
+  animation: fadeOut 3s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 </style>

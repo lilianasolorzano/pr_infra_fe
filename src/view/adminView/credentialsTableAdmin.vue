@@ -1,4 +1,19 @@
 <template>
+   <v-alert v-show="mostrarMensajeAgr" type="success" dismissible class="fade-out-message">
+      {{ mensajeAgr }}
+   </v-alert>
+   <v-alert v-show="mostrarMensajeAgrError">{{ mensajeAgrError }}</v-alert>
+
+
+
+   <v-alert v-show="mostrarMensajeCreadCred" type="success" dismissible class="fade-out-message">
+      {{ mensajeCreadCred }}
+   </v-alert>
+   <v-alert v-show="mostrarMensajeCredUserIAM" type="success" dismissible class="fade-out-message">
+      {{ mensajeCredUserIAM }}
+   </v-alert>
+
+
    <h1>Usuarios IAM</h1>
    <global-btn btn_global="Agregar credencial" buttonClass="agrBtnCred" dark @click="dialog1 = true" />
    <global-btn btn_global="Crear credencial" buttonClass="regBtnCred" dark @click="dialog2 = true" />
@@ -6,10 +21,8 @@
 
    <div>
       <tablegbl :columns="columns" :data="dataTable" :showButtonEditar="false" :showButtonEliminar="false"
-         :showButtonVisualize="true" :showButtonEliminarIAM="true" @deleteIAM="handleDeleteIAM(UserName)"
+         :showButtonVisualize="true" :showButtonEliminarIAM="true" @deleteIAM="handleDeleteIAM"
          @visualizeCredUser="handleVisualizeIAM" />
-
-
    </div>
 
    <!-- Ventana modal para agregar nueva credencial-->
@@ -44,7 +57,9 @@
 
             </v-card-text>
             <v-card-actions>
-               <v-btn color="primary" @click="AgrCredential">Guardar</v-btn>
+               <div @click="">
+                  <v-btn color="primary" @click="AgrCredential">Guardar</v-btn>
+               </div>
                <v-btn @click="dialog1 = false">Cancelar</v-btn>
             </v-card-actions>
          </v-card>
@@ -60,7 +75,6 @@
             <v-card-title>Crear Credencial de usuario IAM</v-card-title>
             <v-card-text>
                <div>
-
                   <select v-model="selectedUserName" id="user" @change="fillCreatCred">
                      <option value="">Seleccione un usuario...</option>
                      <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="dato.UserName">{{
@@ -69,14 +83,11 @@
                      </option>
                   </select>
                </div>
-               <input-global title="" name="nombre" @update:value="newValue => listenUserIAM('UserName', newValue)" />
-               <!-- <input-global title="" name="Fecha de expiracion" type="date" :value="creatIAM.expirationDate"
-                  @update:value="newValue => listenUserIAM('ExpirationDate', newValue)" /> -->
-               <div>
-               </div>
             </v-card-text>
             <v-card-actions>
-               <v-btn color="primary" @click="CreateCredential">Guardar</v-btn>
+               <div @click="mostrarMensajeTempralCreadCred">
+                  <v-btn color="primary" @click="CreateCredential">Guardar</v-btn>
+               </div>
                <v-btn @click="dialog2 = false">Cancelar</v-btn>
             </v-card-actions>
          </v-card>
@@ -94,12 +105,12 @@
                   <input-global title="" type="text" id="userName" v-model="usuarioIAM.userName"
                      @update:value="newValue => updateIAM('userName', newValue)" name="nombre de usuario" />
                </div>
-               <div>
-                  <!-- <global-btn btn_global="Regitrar" :stop-event="true" @click="createJSON" /> -->
-               </div>
+
             </v-card-text>
             <v-card-actions>
-               <v-btn color="primary" @click="createJSON">Guardar</v-btn>
+               <div @click="mostrarMensajeTempralCredUserIAM">
+                  <v-btn color="primary" @click="createUserIAM">Guardar</v-btn>
+               </div>
                <v-btn @click="dialog3 = false">Cancelar</v-btn>
             </v-card-actions>
          </v-card>
@@ -118,15 +129,13 @@ import amplifyConfig from '../../ampliconfig';
 import { IduserIAM } from '../../types';
 import { CredentRegistIAM } from '../../types';
 import { userWithOutCredential } from '../../types'
-// import { CreatRegistIAM } from '../../types';
 import { inputGlobal } from '../../importFile';
 import router from '../../router/router';
-
-
 
 Amplify.configure(amplifyConfig)
 const dataStore = usedataStore()
 const usersIAM = ref<IduserIAM[]>([])
+
 
 
 // obtencion de usuariosIAM desde JSON
@@ -134,6 +143,8 @@ async function getIAM() {
    try {
       const getUser = await API.get({
          apiName: 'access_API',
+         // mandar in id de el usuario que inicio sesion 
+         // path: '/dev/iam/getUserCredential/1',
          path: '/dev/iam/findAll',
          options: {
             body: {
@@ -239,16 +250,29 @@ const handleVisualizeIAM = (UserName: string | number) => {
 
 
 
+// mensaje de accion credencial agregado
+const mensajeAgr = ref('');
+const mostrarMensajeAgr = ref<boolean>(false);
+const mostrarMensajeTempralAgr = () => {
+   mostrarMensajeAgr.value = true;
+   setTimeout(() => {
+      mostrarMensajeAgr.value = true;
+   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
+}
+
+// mensaje de error a la credencial agregado
+
+const mensajeAgrError = ref('');
+const mostrarMensajeAgrError = ref<boolean>(false);
+const mostrarMensajeTempralAgrError = () => {
+   mostrarMensajeAgrError.value = true;
+   setTimeout(() => {
+      mostrarMensajeAgrError.value = true;
+   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
+}
 
 
-
-
-
-
-
-
-
-// ventana modal para registrar nuevas credenciales
+// ventana modal para Agregar nuevas credenciales
 const dialog1 = ref(false);
 
 const selectedUserName = ref<string>('');
@@ -261,7 +285,7 @@ const registCredential = ref<CredentRegistIAM>({
 })
 
 
-// registrar nuevas credenciales 
+// obtencial de datos de las credenciales a agregar 
 async function fetchUsersData() {
    try {
       const getUserIAM = await API.get({
@@ -277,7 +301,7 @@ async function fetchUsersData() {
       if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
 
          userListRegIAM.value = data.data as unknown as CredentRegistIAM[];
-         // dataStore.clearUserIds();
+
          userListRegIAM.value.forEach((IAMcredential) => {
             dataStore.registCredentialIAM(
                IAMcredential.UserId as string,
@@ -314,18 +338,29 @@ const agregarCredencial = () => {
 };
 
 
-// metod put para enviar los datos agregados a mi formulario 
+// metod put para enviar los datos y agregar la credencial a la tabla 
 const registerCredIAMuser = async () => {
    try {
-      await API.put({
+      const response = await API.put({
          apiName: 'access_API',
-         path: `/dev/iam/addListIam/${registCredential.value.UserName}`,
+         // AGREGAR ID DE USUARIO QUE INICIO SESION 
+         path: `/dev/iam/addListIam/${registCredential.value.UserName}/1`,
       });
-      console.log('Credencial agregada');
-      dialog1.value = false; // Cierra la ventana modal
-      console.log('agregate call succeeded');
+
+      const body = await response.response
+      const data = body.body.json()
+
+      if (data) {
+         console.log('Credencial agregada');
+         dialog1.value = false; // Cierra la ventana modal
+         console.log('agregate call succeeded');
+         mostrarMensajeTempralAgr()
+         mensajeAgr.value = 'Credencial agregado exitosamente'
+      }
    } catch (error) {
       console.log('agregate call failed: ', error);
+      mostrarMensajeTempralAgrError()
+      mensajeAgrError.value = 'Error: La credencial no fue agregada con exito'
 
    } finally {
 
@@ -356,9 +391,6 @@ function ClearUser() {
    registCredential.value.UserId = '';
 
 }
-
-
-
 const AgrCredential = async (fielName: string, value: string) => {
    updateAgrCred(fielName, value)
    await registerCredIAMuser()
@@ -374,6 +406,15 @@ const AgrCredential = async (fielName: string, value: string) => {
 
 
 
+// mensaje de accion creacion de credenciales
+const mensajeCreadCred = ref('');
+const mostrarMensajeCreadCred = ref<boolean>(false);
+const mostrarMensajeTempralCreadCred = () => {
+   mostrarMensajeCreadCred.value = true;
+   setTimeout(() => {
+      mostrarMensajeCreadCred.value = true;
+   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
+}
 
 // ventana modal para crear credenciales de usuarios IAM
 const userListWhitoutCred = ref<userWithOutCredential[]>([]);
@@ -383,6 +424,7 @@ const creatIAM = ref<userWithOutCredential>({
 
 })
 
+// obtencion del enlistado para creacion de credenciales a usuarios IAM 
 async function getUsersIAM() {
    try {
       const getUser = await API.get({
@@ -431,18 +473,18 @@ const fillCreatCred = () => {
    }
 };
 
+// creacion de credenciales 
 const creatUserIAM = async () => {
    try {
       await API.put({
          apiName: 'access_API',
          path: `/dev/iam/createdCred/${creatIAM.value.UserName}`,
-         // options: {
-         //    body: { UserName: 'prueba' }
-         // }
+
       });
       console.log('Credencial creada');
       dialog2.value = false; // Cierra la ventana modal
       console.log('create call succeeded');
+      mensajeCreadCred.value = 'Credencial creada con exito'
    } catch (error) {
       console.log('create call failed: ', error);
 
@@ -475,6 +517,16 @@ function AddnewCredUserIAM() {
 
 
 
+// mensaje de accion para crear usuarios IAM
+const mensajeCredUserIAM = ref('');
+const mostrarMensajeCredUserIAM = ref<boolean>(false);
+const mostrarMensajeTempralCredUserIAM = () => {
+   mostrarMensajeCredUserIAM.value = true;
+   setTimeout(() => {
+      mostrarMensajeCredUserIAM.value = true;
+   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
+}
+
 // ventana modal para crear usuarios IAM
 const dialog3 = ref(false);
 
@@ -485,7 +537,7 @@ const usuarioIAM = ref<UsuarioAgrIAM>({
    userName: ''
 })
 
-const createJSON = async () => {
+const createUserIAM = async () => {
    try {
       await API.post({
          apiName: 'access_API',
@@ -494,7 +546,7 @@ const createJSON = async () => {
             body: usuarioIAM.value.userName as string
          }
       });
-
+      mensajeCredUserIAM.value = 'Usuario IAM creado con exito'
    } catch (error) {
       console.log('create call failed: ', error);
 
