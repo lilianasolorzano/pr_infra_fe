@@ -240,9 +240,8 @@ watch(itemsPerPage, () => {
 <style>
 table {
   background-color: white;
-  /* background-color: #333; */
   box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.2);
-  /* border-radius: 5px; */
+
 }
 
 table:hover {
@@ -258,9 +257,6 @@ table:hover {
   margin-bottom: 5%;
   margin-left: 5%;
   margin-right: 5%;
-  /* justify-content: center; */
-  /* align-items: center; */
-
 }
 
 th,

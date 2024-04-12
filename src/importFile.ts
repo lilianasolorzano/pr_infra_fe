@@ -6,6 +6,7 @@ import inputGlobal from "./components/inputGlobal.vue";
 import amplifyConfig from "./ampliconfig";
 import NavBar from "./components/Nav-bar.vue";
 import visualizeCredIAM from "./view/adminView/visualizeCredIAM.vue";
+import AgrNewCred from './view/adminView/AgrNewCred.vue';
 
 export {
     globalBtn,
@@ -15,5 +16,6 @@ export {
     inputGlobal,
     amplifyConfig,
     NavBar,
-    visualizeCredIAM
+    visualizeCredIAM,
+    AgrNewCred
 }

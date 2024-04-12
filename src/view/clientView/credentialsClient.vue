@@ -23,9 +23,11 @@ const usersIAMClient = ref<IduserIAM[]>([])
 // obtencion de usuariosIAM desde JSON
 async function getIAM() {
     try {
+        // enlistado de credenciales dependiendo de el usuario que inicio sesion 
+        const userID = dataStore.id_user
         const getUser = await API.get({
             apiName: 'access_API',
-            path: '/dev/iam/findAll',
+            path: `/dev/iam/getUserCredential/${userID}`,
             options: {
                 body: {
                     message: 'ingresado',

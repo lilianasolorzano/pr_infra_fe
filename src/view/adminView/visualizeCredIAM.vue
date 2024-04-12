@@ -412,4 +412,21 @@ const createdCredSecond = async () => {
 .style_table td div {
     margin-bottom: 5px;
 }
+
+.custom-select {
+    width: 500px;
+    height: 55px;
+    padding: 8px;
+    margin-bottom: 25px;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 16px;
+}
+
+.custom-select option {
+    background-color: #fff;
+    color: #145474;
+}
 </style>

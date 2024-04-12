@@ -1,8 +1,8 @@
 <template>
     <div>
-        <v-responsive max-width="500px">
-            <v-text-field :label="name" :type="type" :rules="[rules.required]" variant="outlined" v-model="inputValue"
-                @input="listenInput">
+        <v-responsive max-width="650px">
+            <v-text-field :disabled="classInput" :label="name" :type="type" :rules="[rules.required]" variant="outlined"
+                v-model="inputValue" @input="listenInput">
                 <label for="">{{ props.title }}</label>
             </v-text-field>
         </v-responsive>
@@ -22,6 +22,7 @@ const props = defineProps({
     },
     name: String,
     type: String,
+    classInput: [Boolean],
 })
 
 const inputValue = ref(props.value)

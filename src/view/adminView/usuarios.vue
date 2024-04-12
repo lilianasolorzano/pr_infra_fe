@@ -305,4 +305,60 @@ function AddnewUser() {
     opacity: 0;
   }
 }
+
+/* estilo de ventana modal  */
+
+.modal {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(20, 84, 116, 0.2);
+}
+
+/* Estilos del contenido de la modal */
+.modal-content {
+  align-items: center;
+  /* background-color: #fefefe; */
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 700px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Sombra */
+}
+
+/* Estilos del botón para cerrar la modal */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.input-select {
+  width: 550px;
+  height: 55px;
+  padding: 8px;
+  margin-bottom: 25px;
+  margin-top: 3px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+.input-select option {
+  background-color: #fff;
+  color: #145474;
+}
 </style>
