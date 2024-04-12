@@ -96,17 +96,8 @@ router.beforeEach((to, _from, next) => {
   const dataStore = usedataStore();
   const isLoggedInValue = dataStore.isLoggedIn;
   const isRole = dataStore.role
-  console.log("Valor de la variable en router.ts", isLoggedInValue)
-  console.log("Valor de la variable en role", isRole)
-
-  /*  const isAuthorized =
-     (!to.meta.requiresAuth || isLoggedInValue) &&
-     (!to.name || isLoggedInValue) &&
-     (!to.meta.requiresAdmin || isRole === 'ADMIN') &&
-     (!to.meta.requiresUser || isRole === 'INVITADO');
- 
-   // Redirige al usuario a la página Forbidden si no está autorizado
-   isAuthorized ? next() : next({ name: 'Forbidden' }); */
+  // console.log("Valor de la variable en router.ts", isLoggedInValue)
+  // console.log("Valor de la variable en role", isRole)
 
   type RolePaths = {
     ADMIN: string;

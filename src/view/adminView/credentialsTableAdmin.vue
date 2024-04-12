@@ -22,8 +22,8 @@
                   <select v-model="selectedUserName" id="user" @change="filterAgrCredUser">
                      <option value="">Seleccione un usuario...</option>
                      <option v-for="datos in userListRegIAM" :key="datos.UserName" :value="datos.UserName">{{
-      datos.UserName
-   }}
+                        datos.UserName
+                     }}
                      </option>
                   </select>
                </div>
@@ -64,8 +64,8 @@
                   <select v-model="selectedUserName" id="user" @change="fillCreatCred">
                      <option value="">Seleccione un usuario...</option>
                      <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="dato.UserName">{{
-      dato.UserName
-   }}
+                        dato.UserName
+                     }}
                      </option>
                   </select>
                </div>
@@ -130,7 +130,7 @@ const usersIAM = ref<IduserIAM[]>([])
 
 
 // obtencion de usuariosIAM desde JSON
-async function getIAM() {
+const getIAM = async () => {
    try {
       const getUser = await API.get({
          apiName: 'access_API',
@@ -171,7 +171,11 @@ async function getIAM() {
    } finally {
    }
 };
-getIAM()
+
+onMounted(() => {
+   getIAM()
+}
+)
 
 
 const columns = [

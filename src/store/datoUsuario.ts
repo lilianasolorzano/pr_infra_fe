@@ -195,13 +195,13 @@ export const usedataStore = defineStore({
         setLoggedIn(role: string, id_user: number) {
             // this.isLoggedIn = isLoggedIn
             this.isLoggedIn = true;
-            this.id_user = id_user
+            this.id_user = id_user.toString()
             if (role) {
                 this.role = role;
-                Cookies.set('role', role, { expires: 1 });
+                Cookies.set('role', role, { SameSite: 'None' }, { expires: 1 });
             }
-            Cookies.set('id', id_user)
-            Cookies.set('isLoggedIn', 'true', { expires: 1 });
+            Cookies.set('id', id_user.toString(), { sameSite: 'None', secure: true })
+            Cookies.set('isLoggedIn', 'true', { expires: 1 }, { sameSite: 'None', secure: true });
         },
 
         logout() {

@@ -1,7 +1,7 @@
 <template>
-    <btn @click="onClick">
-        <button @click="handleClick" :class="buttonClass" class="btn_agr">{{ btn_global }}</button>
-    </btn>
+    <!-- <btn class="btn_glo_component" @click="onClick"> -->
+    <button @click="handleClick, onClick" :class="buttonClass" class="btn_agr">{{ btn_global }}</button>
+    <!-- </btn> -->
 </template>
 
 <script setup lang="ts">
@@ -22,7 +22,7 @@ const handleClick = () => {
     props.onClikBtn;
 };
 const emit = defineEmits()
-console.log(handleClick)
+// console.log(handleClick)
 
 emit('cambiar nombre', 'nuevo nombre del boton')
 const onClick = () => {
