@@ -56,12 +56,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../view/adminView/AgrNewCred.vue'),
   },
   {
-    path: '/credentialCreate',
-    name: 'credentialCreate',
-    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
-    component: () => import('../view/adminView/credentialsCreate.vue')
-  },
-  {
     path: '/VisualizeIAM/:UserName',
     name: 'visualizeCredIAM',
     meta: { requiresAdmin: true },

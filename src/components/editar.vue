@@ -1,18 +1,18 @@
 <template>
-    <h1>editar usuario normal</h1>
+    <h1>Editar usuario normal</h1>
     <div class="form-container">
-        <form>
+        <form @submit.prevent="">
             <div>
                 <input-global title="" name="user" :value="userID.user"
-                    @update:value="newValue => updateI('user', newValue)" />
+                    @update:value="newValue => updateIUsers('user', newValue)" />
                 <input-global title="" name="email" :value="userID.email"
-                    @update:value="newValue => updateI('email', newValue)" />
-                <input-global title="" name="Agregar nueva contraseña" :type="showPassword ? 'text' : 'password'"
+                    @update:value="newValue => updateIUsers('email', newValue)" />
+                <!-- <input-global title="" name="Agregar nueva contraseña" :type="showPassword ? 'text' : 'password'"
                     @update:value="newValue => updateI('password', newValue)">
                 </input-global>
-                <v-icon @click="toggleShowPassword">{{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}</v-icon>
+                <v-icon @click="toggleShowPassword">{{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}</v-icon> -->
                 <div>
-                    <v-select title="" id="UserRol" :items="['admin', 'invitado']" v-model="selectedOption"
+                    <v-select title="" id="UserRol" :items="['ADMIN', 'INVITADO']" :value="selectedOption"
                         style="width: 650px;" />
                 </div>
 
@@ -39,19 +39,19 @@ const dataStore = usedataStore()
 Amplify.configure(amplifyConfig);
 
 
-const showPassword = ref(false); // Estado para controlar la visibilidad de la contraseña
+// const showPassword = ref(false); // Estado para controlar la visibilidad de la contraseña
 
-// Función para alternar la visibilidad de la contraseña
-const toggleShowPassword = () => {
-    showPassword.value = !showPassword.value;
-};
+// // Función para alternar la visibilidad de la contraseña
+// const toggleShowPassword = () => {
+//     showPassword.value = !showPassword.value;
+// };
 
 
 
 
 
 const props = defineProps(['id']);// Usuario seleccionado para edición
-const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '', password: '' });
+const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '' });
 const selectedOption = ref('select...');
 
 
@@ -86,11 +86,12 @@ async function getLogin() {
 
     }
 };
-onMounted(getLogin)
 
-const saveJSON = async () => {
+
+
+const saveUsers = async () => {
     try {
-        const restOperation = API.put({
+        const restOperation = await API.put({
             apiName: "access_API",
             path: `/dev/users/update/${props.id}`,
             options: {
@@ -110,18 +111,22 @@ const saveJSON = async () => {
     }
 };
 
-const updateI = (fielName: string, value: string) => {
+const updateIUsers = (fielName: string, value: string) => {
     userID.value = { ...userID.value, [fielName]: value }
     console.log('datos agregados', userID.value)
 }
 
 const addEdit = async (fielName: string, value: string) => {
-    updateI(fielName, value)
-    await saveJSON()
+    updateIUsers(fielName, value)
+    await saveUsers()
     router.push('/Users')
 }
 
+onMounted(getLogin)
+
 </script>
+
+
 
 <style scoped>
 form {
