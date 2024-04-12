@@ -182,18 +182,44 @@ const handleButtonDeleteIAM = (UserName: string | number) => {
 };
 
 // const data = ref(props.data);
+// const currentPage = ref(1);
+// const itemsPerPage = ref(5);
+
+// const totalItems = computed(() => props.data?.length ?? 0);
+// // const startIndex = computed(() => totalItems.value > 0 ? Math.min((currentPage.value - 1) * itemsPerPage.value + 1, totalItems.value) : 0);
+// const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value);
+// const endIndex = computed(() => Math.min(currentPage.value * itemsPerPage.value, totalItems.value));
+
+// const paginatedData = computed(() => props.data?.slice(startIndex.value, startIndex.value + itemsPerPage.value));
+// const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
+
+// const itemsInfo = computed(() => `${startIndex.value}-${endIndex.value} of ${totalItems.value}`);
+
+// const handleItemsPerPageChange = () => {
+//   currentPage.value = 1; // Resetea la página actual cuando se cambia el número de elementos por página
+// };
+
+// const handlePagination = (value: number) => {
+//   currentPage.value = value;
+// };
+
+// // Añadir un watcher para confirmar y actuar sobre cambios en itemsPerPage
+// watch(itemsPerPage, () => {
+//   currentPage.value = 1; // Asegúrate de que la página se reinicia también aquí
+//   // Puedes agregar más lógica si es necesario cuando esto cambia
+// }, { immediate: true });
 const currentPage = ref(1);
 const itemsPerPage = ref(5);
 
 const totalItems = computed(() => props.data?.length ?? 0);
-// const startIndex = computed(() => totalItems.value > 0 ? Math.min((currentPage.value - 1) * itemsPerPage.value + 1, totalItems.value) : 0);
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value);
+
+const startIndex = computed(() => Math.min((currentPage.value - 1) * itemsPerPage.value + 1, totalItems.value));
 const endIndex = computed(() => Math.min(currentPage.value * itemsPerPage.value, totalItems.value));
 
-const paginatedData = computed(() => props.data?.slice(startIndex.value, startIndex.value + itemsPerPage.value));
+const paginatedData = computed(() => props.data?.slice(startIndex.value - 1, startIndex.value + itemsPerPage.value - 1));
 const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
 
-const itemsInfo = computed(() => `${startIndex.value}-${endIndex.value} of ${totalItems.value}`);
+const itemsInfo = computed(() => `${startIndex.value}-${endIndex.value} de ${totalItems.value}`);
 
 const handleItemsPerPageChange = () => {
   currentPage.value = 1; // Resetea la página actual cuando se cambia el número de elementos por página
