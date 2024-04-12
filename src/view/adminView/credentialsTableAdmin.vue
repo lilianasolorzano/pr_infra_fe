@@ -148,7 +148,8 @@ const getIAM = async () => {
       if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
          usersIAM.value = data.data as unknown as IduserIAM[];
 
-         dataStore.clearUserIds();
+         dataStore.reset();
+
          usersIAM.value.forEach((IAM) => {
             dataStore.userIAM(
                IAM.UserId as string,

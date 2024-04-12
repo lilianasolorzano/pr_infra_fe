@@ -50,6 +50,7 @@ async function getLogin() {
             console.log('APPI', data);
             userID.value = data.data as unknown as IdUsuario
             console.log('idusers', userID.value)
+            // dataStore.reset()
             dataStore.userEdit(userID.value)
         } else {
             console.log('sin respuesta')
@@ -91,6 +92,7 @@ const addEdit = async (fielName: string, value: string) => {
     updateI(fielName, value)
     await saveJSON()
     router.push('/Users')
+    dataStore.reset()
 }
 
 

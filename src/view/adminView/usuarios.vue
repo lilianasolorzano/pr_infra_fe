@@ -78,7 +78,8 @@ async function getUsers() {
 
     if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
       idUsers.value = data.data as unknown as IdUsuario[];
-      dataStore.clearUserIds();
+      // dataStore.clearUserIds();
+      dataStore.reset()
 
       idUsers.value.forEach((dataStoreJson) => {
         dataStore.userJson(
@@ -141,7 +142,8 @@ async function handleDeleteJSON(Idusers: string | number) {
     await restOperation.response
 
     idUsers.value = idUsers.value.filter((row) => row.id !== Idusers)
-    dataStore.clearUserIds();
+    dataStore.reset()
+    // getUsers
 
     idUsers.value.forEach((getUser) => {
       dataStore.userGet(
@@ -174,7 +176,7 @@ const UsuarioAgr = ref<IdUsuario>({
 
 const createUser = async () => {
   try {
-    await API.post({
+    const restOperation = await API.post({
       apiName: 'access_API',
       path: '/dev/users/create',
       options: {
@@ -186,10 +188,25 @@ const createUser = async () => {
         }
       }
     });
-    console.log('Usuario agregado');
-    mensaje.value = 'Usuario agregado exitosamente';
-    dialog.value = false;
-    dataStore.clearUserIds()
+
+    // dataStore.reset()
+    const response = await restOperation.response
+
+    if (response.statusCode === 200) {
+      const responseData = await response.body.json()
+      console.log('Usuario agregado');
+      mensaje.value = 'Usuario agregado exitosamente';
+      dialog.value = false;
+      dataStore.clearUserIds()
+      return responseData
+
+    } else {
+      const errorData = await response.body.json();
+      console.error('Error al crear usuario. Código de estado:', response.statusCode);
+      console.error('Detalles del error:', errorData);
+    }
+
+
 
   } catch (error) {
     console.log('create call failed: ', error);
@@ -206,7 +223,9 @@ const updateI = (fielName: string, value: string) => {
 const CreateCredential = async (fielName: string, value: string) => {
   updateI(fielName, value)
   await createUser()
+  // dataStore.reset()
   router.push('/Users')
+
 }
 
 // enviar los datos del formulario a mi store 
