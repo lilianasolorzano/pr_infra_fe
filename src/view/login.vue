@@ -52,12 +52,12 @@ const router = useRouter()
 
 const handleLogin = async () => {
     const hashedPassword = bcrypt.hashSync('password', 10)
-    console.log('hashedpassword', hashedPassword)
+    // console.log('hashedpassword', hashedPassword)
     const passwordMatch = bcrypt.compareSync(loginDetails.value.password, hashedPassword)
-    console.log('passwordMatch', passwordMatch)
+    // console.log('passwordMatch', passwordMatch)
 
     const authenticated = false
-    console.log('tratando de enviar a otra pagina', authenticated)
+    // console.log('tratando de enviar a otra pagina', authenticated)
 
     let data: UserData | null = null;
 
@@ -76,9 +76,11 @@ const handleLogin = async () => {
             if (typeof jsonData === 'object' && jsonData !== null) {
                 data = jsonData as unknown as UserData;
                 const role = data?.data?.userDTO?.role
+                const idUser = data?.data?.userDTO?.id
 
-                dataStore.setLoggedIn(role)
-                console.log("auth, login", role)
+                dataStore.setLoggedIn(role, idUser)
+
+                // console.log("auth, login", role)
 
                 const roleRoutes = {
                     'ADMIN': '/users',
@@ -111,7 +113,7 @@ const handleLogin = async () => {
 
 const updateI = (fielName: string, value: string) => {
     loginDetails.value = { ...loginDetails.value, [fielName]: value }
-    console.log('datos agregados', loginDetails.value)
+    // console.log('datos agregados', loginDetails.value)
 }
 
 </script>

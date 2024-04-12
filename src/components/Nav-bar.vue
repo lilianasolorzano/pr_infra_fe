@@ -8,7 +8,7 @@
       <div>
         <router-link class="styleLink" to="/Credentials">Credentials</router-link>
       </div>
-      <global-btn btn_global="Cerrar sesion" buttonClass="alingBtn" @click="logout" />
+      <globalBtn btn_global="Cerrar sesion" buttonClass="alingBtn" @click="logout" />
     </div>
   </nav>
 

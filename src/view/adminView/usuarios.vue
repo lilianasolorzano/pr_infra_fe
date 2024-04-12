@@ -68,11 +68,14 @@ import { usedataStore } from '../../store/datoUsuario';
 import router from '../../router/router';
 import { inputGlobal } from '../../importFile';
 
-
-
-
 Amplify.configure(amplifyConfig);
 const dataStore = usedataStore()
+dataStore.id_user
+const userId = dataStore.id_user
+console.log('id de usuario local', userId)
+
+
+
 
 const idUsers = ref<IdUsuario[]>([])
 // llamar la API   
