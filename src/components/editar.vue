@@ -2,7 +2,6 @@
     <h1>editar usuario normal</h1>
     <input-global title="" name="user" :value="userID.user" @update:value="newValue => updateI('user', newValue)" />
     <input-global title="" name="email" :value="userID.email" @update:value="newValue => updateI('email', newValue)" />
-    <!-- <input-global title="" name="role" :value="userID.role" /> -->
     <div>
         <v-select title="" id="UserRol" :items="['admin', 'invitado']" v-model="selectedOption" />
     </div>
@@ -28,7 +27,7 @@ const dataStore = usedataStore()
 Amplify.configure(amplifyConfig);
 
 const props = defineProps(['id']);// Usuario seleccionado para edición
-const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '' });
+const userID = ref<IdUsuario>({ id: '', user: '', email: '' });
 const selectedOption = ref('select...');
 
 
@@ -72,7 +71,12 @@ const saveJSON = async () => {
             apiName: "access_API",
             path: `/dev/users/update/${props.id}`,
             options: {
-                body: userID.value
+                body: {
+                    user: userID.value.user as string,
+                    email: userID.value.email as string,
+                    role: selectedOption.value
+                }
+
 
             }
         });
