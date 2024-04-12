@@ -17,10 +17,10 @@
             @update:value="newValue => updateI('UserId', newValue)" />
         <input-global title="" type="" name="Llave de acceso IAM" id="accessKeyId"
             v-model="registCredential.accessKeyId" @update:value="newValue => updateI('accessKeyId', newValue)" />
-        <input-global title="" type="" name="Llave secreta" id="secretKey" v-model="registCredential.secretKey"
+        <input-global title="" type="" name="Llave secreta" id="secretKey" v-model="registCredential.secretAccess"
             @update:value="newValue => updateI('secretKey', newValue)" />
         <input-global title="" type="" name="Fecha de expiracion" id="ExpirationDate"
-            v-model="registCredential.ExpirationDate" @update:value="newValue => updateI('ExpirationDate', newValue)" />
+            v-model="registCredential.dateExpiration" @update:value="newValue => updateI('ExpirationDate', newValue)" />
     </form>
 </template>
 
@@ -41,8 +41,8 @@ const registCredential = ref<CredentRegistIAM>({
     UserId: '',
     UserName: '',
     accessKeyId: '',
-    secretKey: '',
-    ExpirationDate: ''
+    secretAccess: '',
+    dateExpiration: ''
 })
 
 // llamar API 
@@ -62,13 +62,14 @@ async function fetchUsersData() {
 
             userListIAM.value = data.data as unknown as CredentRegistIAM[];
             // dataStore.clearUserIds();
+            dataStore.reset()
             userListIAM.value.forEach((IAMcredential) => {
                 dataStore.registCredentialIAM(
                     IAMcredential.UserId as string,
                     IAMcredential.UserName as string,
                     IAMcredential.accessKeyId as string,
-                    IAMcredential.secretKey as string,
-                    IAMcredential.date as string
+                    IAMcredential.secretAccess as string,
+                    IAMcredential.dateExpiration as string
                 )
             });
         } else {
@@ -101,7 +102,7 @@ async function fillUserData() {
             UserId: '',
             UserName: '',
             accessKeyId: '',
-            secretKey: ''
+            secretAccess: ''
         };
     }
 }

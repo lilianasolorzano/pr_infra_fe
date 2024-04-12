@@ -1,11 +1,6 @@
 <template>
-  <!-- componer el alert  -->
-  <v-alert v-show="mostrarMensaje" type="success" dismissible class="fade-out-message">
-    {{ mensaje }}
-  </v-alert>
-
-  <v-alert v-show="mostrarMensajeDel" type="error" dismissible class="fade-out-message">
-    {{ mensajeDel }}
+  <v-alert v-show="mostrarMensajeCredUserIAMs" :type="tipoDeAlerta" dismissible class="fade-out-message">
+    {{ mensajeCredUserIAMs }}
   </v-alert>
 
   <h1 class="textUser">Usuarios</h1>
@@ -40,7 +35,7 @@
         </v-card-text>
         <v-card-actions>
           <!-- <div @click="showAlertAgrUserExit"> -->
-          <v-btn color="primary" @click="mostrarMensajeTempral">
+          <v-btn color="primary">
             <global-btn btn_global="Regitrar" :stop-event="true" @click="CreateUserLo" />
           </v-btn>
           <!-- </div> -->
@@ -65,6 +60,7 @@ import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
 import router from '../../router/router';
 import { inputGlobal } from '../../importFile';
+import mostrarMensajeTempralCredUserIAMs, { mostrarMensajeCredUserIAMs, mensajeCredUserIAMs, tipoDeAlerta } from '../mensaje'
 
 Amplify.configure(amplifyConfig);
 const dataStore = usedataStore()
@@ -149,7 +145,6 @@ const handleEdit = (id: string) => {
 
 
 // mensaje de accion Usuario eliminado
-const mensajeDel = ref('')
 const mostrarMensajeDel = ref<boolean>(false);
 const mostrarMensajeTempralDel = () => {
   mostrarMensajeDel.value = true;
@@ -166,7 +161,9 @@ const handleDeleteJSON = async (Idusers: string | number) => {
       path: `/dev/users/delete/${Idusers}`,
     });
     await restOperation.response
-    mensajeDel.value = 'Usuario eliminado';
+    // mensajeDel.value = 'Usuario eliminado';
+
+    mostrarMensajeTempralCredUserIAMs('deleteUser', 'error')
 
     idUsers.value = idUsers.value.filter((row) => row.id !== Idusers)
     dataStore.reset()
@@ -184,37 +181,10 @@ const handleDeleteJSON = async (Idusers: string | number) => {
     })
     console.log('user deleted successfully:', Idusers);
   } catch (error) {
+    mostrarMensajeTempralCredUserIAMs('deleteErrorUser', 'error')
     console.log('delete call failed: ', error);
   }
 };
-
-// mensaje de usuario agregado
-// function showAlertAgrUserExit() {
-//   Swal.fire({
-//     html: '<div style="width: 100%; height: 200px;">El usuario ha sido agregado de manera exitosa</div>',
-//     // text: "El usuario ha sido agregado de manera exitosa",
-//     position: "top",
-//     imageHeight: 100,
-//     icon: "success",
-//     showConfirmButton: false,
-//     timer: 1500,
-//     // customClass: {
-//     //   container: 'custom-swal-container'
-//     // }
-//   });
-// }
-
-
-
-// mensaje de accion Usuario registrado
-const mensaje = ref('');
-const mostrarMensaje = ref<boolean>(false);
-const mostrarMensajeTempral = () => {
-  mostrarMensaje.value = true;
-  setTimeout(() => {
-    mostrarMensaje.value = true;
-  }, 5000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
-}
 
 // ventana modal de agregar usuario IAM 
 const dialog = ref(false);
@@ -229,16 +199,19 @@ const UsuarioAgr = ref<IdUsuario>({
 
 const createUser = async () => {
   try {
+
+    const userBody = {
+      user: UsuarioAgr.value.user as string,
+      email: UsuarioAgr.value.email as string,
+      password: UsuarioAgr.value.password as string,
+      role: selectedOption.value
+    }
+
     const restOperation = await API.post({
       apiName: 'access_API',
       path: '/dev/users/create',
       options: {
-        body: {
-          user: UsuarioAgr.value.user as string,
-          email: UsuarioAgr.value.email as string,
-          password: UsuarioAgr.value.password as string,
-          role: selectedOption.value
-        }
+        body: userBody
       }
     });
 
@@ -247,21 +220,20 @@ const createUser = async () => {
 
     if (response.statusCode === 200) {
       const responseData = await response.body.json()
+      const updateListUsers = await getUsers()
       console.log('Usuario agregado');
-      mensaje.value = 'Usuario agregado exitosamente';
+
       dialog.value = false;
-      dataStore.clearUserIds()
-      return responseData
+      mostrarMensajeTempralCredUserIAMs('createUser', 'success')
+      return ([responseData, updateListUsers])
 
     } else {
       const errorData = await response.body.json();
       console.error('Error al crear usuario. Código de estado:', response.statusCode);
       console.error('Detalles del error:', errorData);
     }
-
-
-
   } catch (error) {
+    mostrarMensajeTempralCredUserIAMs('createUserError', 'error')
     console.log('create call failed: ', error);
 
   } finally {
@@ -276,7 +248,6 @@ const updateI = (fielName: string, value: string) => {
 const CreateUserLo = async (fielName: string, value: string) => {
   updateI(fielName, value)
   await createUser()
-  // dataStore.reset()
   router.push('/Users')
 
 }
@@ -290,15 +261,12 @@ function AddnewUser() {
     role: UsuarioAgr.value.role,
   })
   console.log(UsuarioAgr.value.user || '')
-  // console.log(UsuarioAgr.value.user)  
   console.log(UsuarioAgr.value.email)
   console.log(UsuarioAgr.value.password)
   console.log(UsuarioAgr.value.role)
 };
 
 
-// Llama a la función para ocultar el mensaje después de que el componente se monte
-// onMounted(ocultarMensaje);
 </script>
 
 
@@ -308,27 +276,18 @@ function AddnewUser() {
 .styleBUser {
   background-color: #145474;
   font-size: 13px;
-  /* text-decoration: underline; */
   color: white;
-  /* border: 2px solid black; */
   border-radius: 10px;
   height: 40px;
   width: 140px;
   text-decoration: none;
-  /* padding: 10px;
-  padding-bottom: 10px; */
   position: relative;
   margin-left: 5%;
   margin-top: 50px;
 }
 
 .textUser {
-  /* background-image: url("../../../public/img/istockphoto-1130707008-612x612.jpg"); */
-  /* background-size: cover;
-  background-clip: text; */
-  /* -webkit-background-clip: text; */
   display: flex;
-  /* color: white; */
   margin-left: 5%;
   margin-top: 40px;
 }

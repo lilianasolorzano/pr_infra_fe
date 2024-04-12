@@ -5,7 +5,7 @@
             @update:value="newValue => listenUserIAM('UserId', newValue)" />
         <input-global title="" name="Usuario IAM" type="text" v-model="creatIAM.UserName"
             @update:value="newValue => listenUserIAM('userName', newValue)" />
-        <input-global title="" name="Fecha de expiracion" type="date" v-model="creatIAM.ExpirationDate"
+        <input-global title="" name="Fecha de expiracion" type="date" v-model="creatIAM.dateExpiration"
             @update:value="newValue => listenUserIAM('ExpirationDate', newValue)" />
         <div>
             <global-btn btn_global="Guardar" @click="creatUserIAM" />
@@ -41,6 +41,7 @@ const creatUserIAM = async () => {
             }
         });
         console.log('create call succeeded');
+        dataStore.reset()
     } catch (error) {
         console.log('create call failed: ', error);
 
@@ -52,13 +53,14 @@ const listenUserIAM = (fielName: string, value: string) => {
     creatIAM.value = { ...creatIAM.value, [fielName]: value }
     console.log(creatIAM.value)
 }
-function AddnewUserIAM(newuseriam: { UserId: string, UserName: string, accessKeyId: string, secretKey: string, date: string }) {
+// function AddnewUserIAM(newuseriam: { UserId: string, UserName: string, accessKeyId: string, secretKey: string, date: string }) {
+function AddnewUserIAM(newuseriam: { UserName: string }) {
     dataStore.saveDataIAM(
-        newuseriam.UserId,
+        // newuseriam.UserId,
         newuseriam.UserName,
-        newuseriam.accessKeyId,
-        newuseriam.secretKey,
-        newuseriam.date,
+        // newuseriam.accessKeyId,
+        // newuseriam.secretKey,
+        // newuseriam.date,
     )
 
 }

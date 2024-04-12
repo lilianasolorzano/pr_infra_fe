@@ -50,6 +50,7 @@ export const usedataStore = defineStore({
             UserId: '',
             UserName: ''
         }],
+        datos: [],
         isLoggedIn: Cookies.get('isLoggedIn') === 'true' || false,
         role: Cookies.get('role') || '',
         id_user: Cookies.get('id') || '',
