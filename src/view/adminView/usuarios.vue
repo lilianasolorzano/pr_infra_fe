@@ -1,11 +1,6 @@
 <template>
-  <!-- componer el alert  -->
-  <v-alert v-show="mostrarMensaje" type="success" dismissible class="fade-out-message">
-    {{ mensaje }}
-  </v-alert>
-
-  <v-alert v-show="mostrarMensajeDel" type="error" dismissible class="fade-out-message">
-    {{ mensajeDel }}
+  <v-alert v-show="mostrarMensajeCredUserIAMs" :type="tipoDeAlerta" dismissible class="fade-out-message">
+    {{ mensajeCredUserIAMs }}
   </v-alert>
 
   <h1 class="textUser">Usuarios</h1>
@@ -17,44 +12,39 @@
 
   <!-- Ventana modal -->
   <form @submit.prevent="AddnewUser">
-    <div class="modal-content">
-      <v-dialog v-model="dialog" max-width="600px" class="modal">
-        <v-card>
-          <v-card-title>Agregar Nueva Usuario</v-card-title>
-          <v-card-text>
-            <div>
-              <input-global title="" type="text" id="UserName" v-model="UsuarioAgr.user"
-                @update:value="newValue => updateI('user', newValue)" name="nombre de usuario" />
-            </div>
-            <div>
-              <input-global title="" type="email" id="UserEmail" v-model="UsuarioAgr.email"
-                @update:value="newValue => updateI('email', newValue)" name="email" />
-            </div>
-            <div>
-              <input-global title="" type="password" id="password" v-model="UsuarioAgr.password"
-                @update:value="newValue => updateI('password', newValue)" name="password" />
-            </div>
-            <div>
-
-              <div>
-                <v-select title="" id="UserRol" :items="['ADMIN', 'INVITADO']" v-model="selectedOption"
-                  style="width: 550px;" />
-              </div>
-
-            </div>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" @click="mostrarMensajeTempral">
-              <v-btn :stop-event="true" @click="CreateUserLo">Guardar</v-btn>
-            </v-btn>
-            <v-btn @click="dialog = false">Cancelar</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title>Agregar Nueva Usuario</v-card-title>
+        <v-card-text>
+          <div>
+            <input-global title="" type="text" id="UserName" v-model="UsuarioAgr.user"
+              @update:value="newValue => updateI('user', newValue)" name="nombre de usuario" />
+          </div>
+          <div>
+            <input-global title="" type="email" id="UserEmail" v-model="UsuarioAgr.email"
+              @update:value="newValue => updateI('email', newValue)" name="email" />
+          </div>
+          <div>
+            <input-global title="" type="password" id="password" v-model="UsuarioAgr.password"
+              @update:value="newValue => updateI('password', newValue)" name="password" />
+          </div>
+          <div>
+            <!-- <UserRol type="text" id="UserRol" v-model="UsuarioAgr.role" /> -->
+            <v-select title="" id="UserRol" :items="['admin', 'invitado']" v-model="selectedOption" />
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <!-- <div @click="showAlertAgrUserExit"> -->
+          <v-btn color="primary">
+            <global-btn btn_global="Regitrar" :stop-event="true" @click="CreateUserLo" />
+          </v-btn>
+          <!-- </div> -->
+          <!-- <v-btn color="primary" @click="agregarCredencial">Guardar</v-btn> -->
+          <v-btn @click="dialog = false">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </form>
-  <!-- boton de alerta  -->
-  <!-- <button @click="showAlert">Hello world</button> -->
 </template>
 
 
@@ -70,6 +60,7 @@ import { computed, onMounted, ref } from 'vue';
 import { usedataStore } from '../../store/datoUsuario';
 import router from '../../router/router';
 import { inputGlobal } from '../../importFile';
+import mostrarMensajeTempralCredUserIAMs, { mostrarMensajeCredUserIAMs, mensajeCredUserIAMs, tipoDeAlerta } from '../mensaje'
 
 Amplify.configure(amplifyConfig);
 const dataStore = usedataStore()
@@ -97,7 +88,8 @@ async function getUsers() {
 
     if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
       idUsers.value = data.data as unknown as IdUsuario[];
-      dataStore.clearUserIds();
+      // dataStore.clearUserIds();
+      dataStore.reset()
 
       idUsers.value.forEach((dataStoreJson) => {
         dataStore.userJson(
@@ -153,7 +145,6 @@ const handleEdit = (id: string) => {
 
 
 // mensaje de accion Usuario eliminado
-const mensajeDel = ref('')
 const mostrarMensajeDel = ref<boolean>(false);
 const mostrarMensajeTempralDel = () => {
   mostrarMensajeDel.value = true;
@@ -170,10 +161,13 @@ const handleDeleteJSON = async (Idusers: string | number) => {
       path: `/dev/users/delete/${Idusers}`,
     });
     await restOperation.response
-    mensajeDel.value = 'Usuario eliminado';
+    // mensajeDel.value = 'Usuario eliminado';
+
+    mostrarMensajeTempralCredUserIAMs('deleteUser', 'error')
 
     idUsers.value = idUsers.value.filter((row) => row.id !== Idusers)
-    dataStore.clearUserIds();
+    dataStore.reset()
+    // getUsers
 
     idUsers.value.forEach((getUser) => {
       dataStore.userGet(
@@ -187,20 +181,10 @@ const handleDeleteJSON = async (Idusers: string | number) => {
     })
     console.log('user deleted successfully:', Idusers);
   } catch (error) {
+    mostrarMensajeTempralCredUserIAMs('deleteErrorUser', 'error')
     console.log('delete call failed: ', error);
   }
 };
-
-
-// mensaje de accion Usuario registrado
-const mensaje = ref('');
-const mostrarMensaje = ref<boolean>(false);
-const mostrarMensajeTempral = () => {
-  mostrarMensaje.value = true;
-  setTimeout(() => {
-    mostrarMensaje.value = true;
-  }, 5000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
-}
 
 // ventana modal de agregar usuario IAM 
 const dialog = ref(false);
@@ -215,24 +199,41 @@ const UsuarioAgr = ref<IdUsuario>({
 
 const createUser = async () => {
   try {
-    await API.post({
+
+    const userBody = {
+      user: UsuarioAgr.value.user as string,
+      email: UsuarioAgr.value.email as string,
+      password: UsuarioAgr.value.password as string,
+      role: selectedOption.value
+    }
+
+    const restOperation = await API.post({
       apiName: 'access_API',
       path: '/dev/users/create',
       options: {
-        body: {
-          user: UsuarioAgr.value.user as string,
-          email: UsuarioAgr.value.email as string,
-          password: UsuarioAgr.value.password as string,
-          role: selectedOption.value
-        }
+        body: userBody
       }
     });
-    console.log('Usuario agregado');
-    mensaje.value = 'Usuario agregado exitosamente';
-    dialog.value = false;
-    dataStore.clearUserIds()
 
+    // dataStore.reset()
+    const response = await restOperation.response
+
+    if (response.statusCode === 200) {
+      const responseData = await response.body.json()
+      const updateListUsers = await getUsers()
+      console.log('Usuario agregado');
+
+      dialog.value = false;
+      mostrarMensajeTempralCredUserIAMs('createUser', 'success')
+      return ([responseData, updateListUsers])
+
+    } else {
+      const errorData = await response.body.json();
+      console.error('Error al crear usuario. Código de estado:', response.statusCode);
+      console.error('Detalles del error:', errorData);
+    }
   } catch (error) {
+    mostrarMensajeTempralCredUserIAMs('createUserError', 'error')
     console.log('create call failed: ', error);
 
   } finally {
@@ -248,6 +249,7 @@ const CreateUserLo = async (fielName: string, value: string) => {
   updateI(fielName, value)
   await createUser()
   router.push('/Users')
+
 }
 
 // enviar los datos del formulario a mi store 
@@ -259,7 +261,6 @@ function AddnewUser() {
     role: UsuarioAgr.value.role,
   })
   console.log(UsuarioAgr.value.user || '')
-  // console.log(UsuarioAgr.value.user)  
   console.log(UsuarioAgr.value.email)
   console.log(UsuarioAgr.value.password)
   console.log(UsuarioAgr.value.role)
@@ -271,7 +272,7 @@ function AddnewUser() {
 
 
 
-<style>
+<style scoped>
 .styleBUser {
   background-color: #145474;
   font-size: 13px;

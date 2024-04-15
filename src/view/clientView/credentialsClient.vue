@@ -27,7 +27,7 @@ async function getIAM() {
         const userID = dataStore.id_user
         const getUser = await API.get({
             apiName: 'access_API',
-            path: `/dev/iam/getUsersCredential/${userID}`,
+            path: `/dev/iam/getUserCredential/${userID}`,
             options: {
                 body: {
                     message: 'ingresado',

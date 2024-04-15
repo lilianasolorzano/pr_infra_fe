@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IduserIAM, IdUsuario, secretUserIAM } from '../types';
+import { IduserIAM, IdUsuario, secretUserIAM, userResponsible } from '../types';
 // import { IdUsuario } from '../types';
 // import Cookies from 'js-cookie'
 import Cookies from 'js-cookie';
@@ -26,6 +26,8 @@ export const usedataStore = defineStore({
             secretAccess: '',
             dateExpiration: '',
         }],
+           // datos de usuarios responsables 
+        dataResponsible: [] as userResponsible[],
 
         // creacion de usuarios IAM 
         creatUserIAM: [{ UserName: '' }],
@@ -37,6 +39,8 @@ export const usedataStore = defineStore({
         // editar usuario IAM, obtener solo el usuario a editar
         dataEditIAM: [] as IduserIAM[],
         dataSecretIAM: [] as secretUserIAM[],
+
+     
 
         //  registrar credencial de usuario IAM 
         dataIAM: [{
@@ -50,6 +54,7 @@ export const usedataStore = defineStore({
             UserId: '',
             UserName: ''
         }],
+        datos: [],
         isLoggedIn: Cookies.get('isLoggedIn') === 'true' || false,
         role: Cookies.get('role') || '',
         id_user: Cookies.get('id') || '',
@@ -155,6 +160,24 @@ export const usedataStore = defineStore({
             // console.error('dato erroneo', UserName)
 
         },
+        //    userResponsible(user: string,credential: string, iam_user_name: string, status: string, date_delete:string, ) {
+        //     this.dataResponsible.push({
+        //         user,
+        //         credential: [
+                    
+        //             status,
+        //             date_delete,
+        //         ]
+                
+                
+        //     })
+        // },
+           
+        userResponsible(inputValue ) {
+            this.dataResponsible.push(inputValue)
+        },
+
+        
         CreadwhitOutCredentialIAM(UserName: string, UserId: string) {
             this.whitOutCred.push({
                 UserId,

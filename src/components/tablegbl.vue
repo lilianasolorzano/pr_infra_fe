@@ -33,19 +33,25 @@
       <tfoot>
         <tr>
           <td colspan="6">
-            <select v-model="itemsPerPage" @change="handleItemsPerPageChange">
-              <option :value="5" selected>5</option>
-              <option :value="10">10</option>
-              <option :value="15">15</option>
-              <option :value="20">20</option>
-            </select>
+            <div class="pagination_container">
+              <div class="items-per-page">
+                <label class="text-style-size" for="itemsPerPageSelect">Items por página:</label>
+                <select class="text-style-size" id="itemsPerPageSelect" v-model="itemsPerPage"
+                  @change="handleItemsPerPageChange">
+                  <option :value="5">5</option>
+                  <option :value="10">10</option>
+                  <option :value="15">15</option>
+                  <option :value="20">20</option>
+                </select>
 
-            <v-pagination v-model="currentPage" :total-visible="5" :per-page="itemsPerPage" @change="handlePagination"
-              :length="totalPages" />
+                <v-pagination v-model="currentPage" :total-visible="5" :per-page="itemsPerPage"
+                  @change="handlePagination" :length="totalPages" />
+                <div class="text-style-size">{{ itemsInfo }}</div>
+              </div>
+            </div>
           </td>
         </tr>
       </tfoot>
-      <div>Total páginas: {{ totalPages }}</div>
     </table>
   </div>
 </template>
@@ -176,14 +182,44 @@ const handleButtonDeleteIAM = (UserName: string | number) => {
 };
 
 // const data = ref(props.data);
+// const currentPage = ref(1);
+// const itemsPerPage = ref(5);
+
+// const totalItems = computed(() => props.data?.length ?? 0);
+// // const startIndex = computed(() => totalItems.value > 0 ? Math.min((currentPage.value - 1) * itemsPerPage.value + 1, totalItems.value) : 0);
+// const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value);
+// const endIndex = computed(() => Math.min(currentPage.value * itemsPerPage.value, totalItems.value));
+
+// const paginatedData = computed(() => props.data?.slice(startIndex.value, startIndex.value + itemsPerPage.value));
+// const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
+
+// const itemsInfo = computed(() => `${startIndex.value}-${endIndex.value} of ${totalItems.value}`);
+
+// const handleItemsPerPageChange = () => {
+//   currentPage.value = 1; // Resetea la página actual cuando se cambia el número de elementos por página
+// };
+
+// const handlePagination = (value: number) => {
+//   currentPage.value = value;
+// };
+
+// // Añadir un watcher para confirmar y actuar sobre cambios en itemsPerPage
+// watch(itemsPerPage, () => {
+//   currentPage.value = 1; // Asegúrate de que la página se reinicia también aquí
+//   // Puedes agregar más lógica si es necesario cuando esto cambia
+// }, { immediate: true });
 const currentPage = ref(1);
 const itemsPerPage = ref(5);
 
 const totalItems = computed(() => props.data?.length ?? 0);
+
+const startIndex = computed(() => Math.min((currentPage.value - 1) * itemsPerPage.value + 1, totalItems.value));
+const endIndex = computed(() => Math.min(currentPage.value * itemsPerPage.value, totalItems.value));
+
+const paginatedData = computed(() => props.data?.slice(startIndex.value - 1, startIndex.value + itemsPerPage.value - 1));
 const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
 
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value);
-const paginatedData = computed(() => props.data?.slice(startIndex.value, startIndex.value + itemsPerPage.value));
+const itemsInfo = computed(() => `${startIndex.value}-${endIndex.value} de ${totalItems.value}`);
 
 const handleItemsPerPageChange = () => {
   currentPage.value = 1; // Resetea la página actual cuando se cambia el número de elementos por página
@@ -250,5 +286,49 @@ td {
   height: auto;
   background-color: hsl(214, 67%, 72%, 0.9);
   /* margin: 5px; */
+}
+
+tfoot {
+  text-align: center;
+  /* background: red; */
+  /* Centra el contenido horizontalmente */
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  /* Ajusta según necesites */
+  padding: 20px;
+  text-align: center;
+}
+
+.items-per-page {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+#itemsPerPageSelect {
+  margin-left: 10px;
+}
+
+.pagination-container {
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.items-per-page select {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 20%;
+}
+
+.text-style-size {
+  font-size: 15px;
+  text-transform: none;
 }
 </style>

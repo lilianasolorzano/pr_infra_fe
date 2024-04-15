@@ -1,11 +1,7 @@
 <template>
-   <v-alert v-show="mostrarMensajeCreadCred" type="success" dismissible class="fade-out-message">
-      {{ mensajeCreadCred }}
+   <v-alert v-show="mostrarMensajeCredUserIAMs" :type="tipoDeAlerta" dismissible class="fade-out-message">
+      {{ mensajeCredUserIAMs }}
    </v-alert>
-   <v-alert v-show="mostrarMensajeCredUserIAM" type="success" dismissible class="fade-out-message">
-      {{ mensajeCredUserIAM }}
-   </v-alert>
-
 
    <h1>Usuarios IAM</h1>
    <router-link to="/AgrNewCred">
@@ -25,55 +21,51 @@
    <!-- ventana modal para crear credenciales  -->
    <form @submit.prevent="AddnewCredUserIAM">
       <!-- <form > -->
-      <div class="modal-content">
-
-         <v-dialog v-model="dialog2" max-width="600px" class="modal">
-            <v-card>
-               <v-card-title>Crear Credencial de Usuario IAM</v-card-title>
-               <v-card-text>
-                  <div>
-                     <select v-model="selectedUserName" id="user" @change="fillCreatCred" class="custom-select">
-                        <option value="">Seleccione un usuario...</option>
-                        <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="dato.UserName">{{
-      dato.UserName
-   }}
-                        </option>
-                     </select>
-                  </div>
-               </v-card-text>
-               <v-card-actions>
-                  <div @click="mostrarMensajeTempralCreadCred">
-                     <v-btn color="primary" @click="CreateCredential">Guardar</v-btn>
-                  </div>
-                  <v-btn @click="dialog2 = false">Cancelar</v-btn>
-               </v-card-actions>
-            </v-card>
-         </v-dialog>
-      </div>
+      <v-dialog v-model="dialog2" max-width="600px">
+         <v-card>
+            <v-card-title>Crear Credencial de usuario IAM</v-card-title>
+            <v-card-text>
+               <div>
+                  <select v-model="selectedUserName" id="user" @change="fillCreatCred">
+                     <option value="">Seleccione un usuario...</option>
+                     <option v-for="(dato, index) in userListWhitoutCred" :key="index" :value="dato.UserName">{{
+                        dato.UserName
+                     }}
+                     </option>
+                  </select>
+               </div>
+            </v-card-text>
+            <v-card-actions>
+               <div>
+                  <v-btn color="primary" @click="CreateCredential">Guardar</v-btn>
+               </div>
+               <v-btn @click="dialog2 = false">Cancelar</v-btn>
+            </v-card-actions>
+         </v-card>
+      </v-dialog>
    </form>
 
 
    <!-- ventana modal para crear un usuario IAM  -->
    <form @submit.prevent="AddnewUser">
-      <div class="modal-content">
-         <v-dialog v-model="dialog3" max-width="600px" class="modal">
-            <v-card>
-               <v-card-title>Crear Usuario IAM</v-card-title>
-               <v-card-text>
-                  <div>
-                     <input-global title="" type="text" id="userName" v-model="usuarioIAM.userName"
-                        @update:value="newValue => updateIAM('userName', newValue)" name="nombre de usuario" />
-                  </div>
-               </v-card-text>
-               <v-card-actions>
-                  <div @click="mostrarMensajeTempralCredUserIAM">
-                     <v-btn color="primary" @click="createUserIAM">Guardar</v-btn>
-                  </div>
-                  <v-btn @click="dialog3 = false">Cancelar</v-btn>
-               </v-card-actions>
-            </v-card>
-         </v-dialog>
-      </div>
+      <v-dialog v-model="dialog3" max-width="600px">
+         <v-card>
+            <v-card-title>Crear Usuario IAM</v-card-title>
+            <v-card-text>
+               <div>
+                  <input-global title="" type="text" id="userName" v-model="usuarioIAM.userName"
+                     @update:value="newValue => updateIAM('userName', newValue)" name="nombre de usuario" />
+               </div>
+
+            </v-card-text>
+            <v-card-actions>
+               <div>
+                  <v-btn color="primary" @click="createUserIAM">Guardar</v-btn>
+               </div>
+               <v-btn @click="dialog3 = false">Cancelar</v-btn>
+            </v-card-actions>
+         </v-card>
+      </v-dialog>
    </form>
 </template>
 
@@ -90,12 +82,12 @@ import { CredentRegistIAM } from '../../types';
 import { userWithOutCredential } from '../../types'
 import { inputGlobal } from '../../importFile';
 import router from '../../router/router';
+import mostrarMensajeTempralCredUserIAMs, { mostrarMensajeCredUserIAMs, mensajeCredUserIAMs, tipoDeAlerta } from '../mensaje'
+
 
 Amplify.configure(amplifyConfig)
 const dataStore = usedataStore()
 const usersIAM = ref<IduserIAM[]>([])
-
-
 
 // obtencion de usuariosIAM desde JSON
 const getIAM = async () => {
@@ -116,7 +108,8 @@ const getIAM = async () => {
       if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
          usersIAM.value = data.data as unknown as IduserIAM[];
 
-         dataStore.clearUserIds();
+         // dataStore.reset();
+
          usersIAM.value.forEach((IAM) => {
             dataStore.userIAM(
                IAM.UserId as string,
@@ -134,16 +127,10 @@ const getIAM = async () => {
       }
    } catch (error) {
       console.log('sin obtener datos', error);
-      console.log('sin obtener datos')
-
    } finally {
    }
 };
 
-onMounted(() => {
-   getIAM()
-}
-)
 
 const columns = [
    { label: 'Usuario IAM', key: 'UserName' },
@@ -165,27 +152,33 @@ async function handleDeleteIAM(UserName: string | number) {
          path: `/dev/iam/delete/${UserName}`,
       });
       console.log('restoperation', restOperation)
-      await restOperation.response
 
-      usersIAM.value = usersIAM.value.filter((row) => row.UserId !== UserName)
-      console.log('iduser', usersIAM.value)
+      const response = await restOperation.response
+      if (response.statusCode === 200) {
+         usersIAM.value = usersIAM.value.filter((row) => row.UserId !== UserName)
+         console.log('iduser', usersIAM.value)
 
+         dataStore.reset()
+         // dataStore.clearUserIds();
+         usersIAM.value.forEach((delUser) => {
+            dataStore.userIAM(
+               delUser.UserId as string,
+               delUser.UserName as string,
+               delUser.accessKeyId as string,
+               delUser.CreateDate as string,
+               delUser.Status as string,
+               delUser.secretAcces as string,
+               delUser.dateExpiration as string,
+            )
 
-      // dataStore.clearUserIds();
-      usersIAM.value.forEach((delUser) => {
-         dataStore.userIAM(
-            delUser.UserId as string,
-            delUser.UserName as string,
-            delUser.accessKeyId as string,
-            delUser.CreateDate as string,
-            delUser.Status as string,
-            delUser.secretAcces as string,
-            delUser.dateExpiration as string,
-         )
+         })
+         console.log('user deleted successfully:', UserName);
+         mostrarMensajeTempralCredUserIAMs('deleteUser', 'error')
 
-      })
-      console.log('user deleted successfully:', UserName);
+      }
+
    } catch (error) {
+      mostrarMensajeTempralCredUserIAMs('deleteUserError', 'error')
       console.log('delete call failed: ', error);
    }
 };
@@ -206,22 +199,6 @@ const handleVisualizeIAM = (UserName: string | number) => {
    } else {
       console.error('Usuario no encontrado');
    }
-}
-
-
-
-
-
-
-
-// mensaje de accion creacion de credenciales
-const mensajeCreadCred = ref('');
-const mostrarMensajeCreadCred = ref<boolean>(false);
-const mostrarMensajeTempralCreadCred = () => {
-   mostrarMensajeCreadCred.value = true;
-   setTimeout(() => {
-      mostrarMensajeCreadCred.value = true;
-   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
 }
 
 // ventana modal para crear credenciales de usuarios IAM
@@ -252,7 +229,6 @@ async function getUsersIAM() {
       const data = await body?.json();
       console.log('APPI', data);
       if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
-
          userListWhitoutCred.value = data.data as unknown as userWithOutCredential[];
          // dataStore.clearUserIds();
          console.log('usuario sin crdencial', userListWhitoutCred.value)
@@ -264,6 +240,7 @@ async function getUsersIAM() {
             )
 
          });
+         // return getUsers
       } else {
          userListRegIAM.value = []
       }
@@ -278,26 +255,43 @@ async function getUsersIAM() {
 
 
 const fillCreatCred = () => {
+   // dataStore.reset()
    const selectedUser = userListWhitoutCred.value.find(user => user.UserName === selectedUserName.value);
    if (selectedUser) {
       creatIAM.value.UserName = selectedUser.UserName;
+
    }
 };
+
+
+// ---------------------------------------------------------------------------------------------------------------------------------//
+// ---------------------------------------------------------------------------------------------------------------------------------//
+// ---------------------------------------------------------------------------------------------------------------------------------//
 
 // creacion de credenciales 
 const creatUserIAM = async () => {
    try {
-      await API.put({
+      const restOperationPut = await API.put({
          apiName: 'access_API',
          path: `/dev/iam/createdCred/${creatIAM.value.UserName}`,
 
       });
-      console.log('Credencial creada');
-      dialog2.value = false; // Cierra la ventana modal
-      console.log('create call succeeded');
-      mensajeCreadCred.value = 'Credencial creada con exito'
+
+      const response = await restOperationPut.response
+
+      if (response.statusCode === 200) {
+
+
+         dialog2.value = false; // Cierra la ventana modal
+         mostrarMensajeTempralCredUserIAMs('credential', 'success');
+
+      }
+
    } catch (error) {
       console.log('create call failed: ', error);
+      dialog2.value = false
+      mostrarMensajeTempralCredUserIAMs('createErrCredential', 'error');
+      // mostrarMensajeTempralCredUserIAMs('createErrCredential')
 
    } finally {
 
@@ -326,17 +320,10 @@ function AddnewCredUserIAM() {
 
 
 
-
-
-// mensaje de accion para crear usuarios IAM
-const mensajeCredUserIAM = ref('');
-const mostrarMensajeCredUserIAM = ref<boolean>(false);
-const mostrarMensajeTempralCredUserIAM = () => {
-   mostrarMensajeCredUserIAM.value = true;
-   setTimeout(() => {
-      mostrarMensajeCredUserIAM.value = true;
-   }, 6000); // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
-}
+// ---------------------------------------------------------------------------------------------------------------------------------//
+// ---------------------------------------------------------------------------------------------------------------------------------//
+// ---------------------------------------------------------------------------------------------------------------------------------//
+// ---------------------------------------------------------------------------------------------------------------------------------//
 
 // ventana modal para crear usuarios IAM
 const dialog3 = ref(false);
@@ -350,17 +337,31 @@ const usuarioIAM = ref<UsuarioAgrIAM>({
 
 const createUserIAM = async () => {
    try {
-      await API.post({
+      const restOperationPost = await API.post({
          apiName: 'access_API',
          path: '/dev/iam/create',
          options: {
             body: usuarioIAM.value.userName as string
          }
       });
-      mensajeCredUserIAM.value = 'Usuario IAM creado con exito'
+
+      const response = await restOperationPost.response
+      if (response.statusCode === 200) {
+         // mensajeCredUserIAM.value = 'Usuario IAM creado con exito'
+         mostrarMensajeTempralCredUserIAMs('successCreateIAM', 'success');
+         dialog3.value = false
+
+         const getUsersDataIam = await getUsersIAM()
+
+
+         return getUsersDataIam
+
+      }
+
    } catch (error) {
       console.log('create call failed: ', error);
-
+      dialog3.value = false
+      mostrarMensajeTempralCredUserIAMs('createUserError', 'error')
    } finally {
 
    }
@@ -379,6 +380,15 @@ function AddnewUser() {
    })
    console.log('usuario agregado', AddnewUser)
 };
+
+
+
+
+onMounted(() => {
+   getIAM()
+})
+
+
 </script>
 
 <style>

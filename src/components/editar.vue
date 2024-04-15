@@ -11,10 +11,12 @@
                     @update:value="newValue => updateI('password', newValue)">
                 </input-global>
                 <v-icon @click="toggleShowPassword">{{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}</v-icon> -->
-                <div>
-                    <v-select title="" id="UserRol" :items="['ADMIN', 'INVITADO']" :value="selectedOption"
-                        style="width: 650px;" />
-                </div>
+
+                <v-select title="" id="UserRol" :items="['ADMIN', 'INVITADO']" v-model="selectedOption"
+                    class="input-selected" variant="outlined" />
+
+
+
 
                 <div>
                     <global-btn btn_global="actualizar" type="submit" @click="addEdit" />
@@ -54,7 +56,7 @@ const props = defineProps(['id']);// Usuario seleccionado para edición
 const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '' });
 const selectedOption = ref('select...');
 
-
+let roleUser;
 async function getLogin() {
     try {
         const getUser = await API.get({
@@ -73,7 +75,17 @@ async function getLogin() {
             console.log('APPI', data);
             userID.value = data.data as unknown as IdUsuario
             console.log('idusers', userID.value)
+            // dataStore.reset()
             dataStore.userEdit(userID.value)
+
+            roleUser = userID.value.role
+
+            if (typeof roleUser === 'string') { // Verifica que value sea de tipo string antes de asignarlo
+                selectedOption.value = roleUser; // Asigna el valor del rol del usuario a selectedOption
+            }
+
+            // console.log("rol del usuario", value)
+
         } else {
             console.log('sin respuesta')
         }
@@ -104,6 +116,10 @@ const saveUsers = async () => {
 
             }
         });
+
+        const role = selectedOption.value;
+        console.log("Rol asignado al usuario", role)
+
         const response = await restOperation.response;
         console.log('PUT call succeeded: ', response);
     } catch (error) {
@@ -120,10 +136,10 @@ const addEdit = async (fielName: string, value: string) => {
     updateIUsers(fielName, value)
     await saveUsers()
     router.push('/Users')
+    dataStore.reset()
 }
 
 onMounted(getLogin)
-
 </script>
 
 
@@ -131,7 +147,7 @@ onMounted(getLogin)
 <style scoped>
 form {
     border-radius: 13px;
-    width: 65%;
+    max-width: 100%;
     height: auto;
     padding: 20px;
     margin: 15px;
@@ -151,7 +167,28 @@ form:hover {
     align-items: center;
     justify-content: center;
     margin-top: 30px;
-    /* height: 100vh; */
-    /* Ajusta la altura del formulario al tamaño de la pantalla */
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.input-selected {
+    /* flex: 1; */
+    /* Toma todo el ancho disponible */
+    /* max-width: 650px; */
+    /* Ancho máximo del v-select */
+    /* margin-right: 10px; */
+    /* Añade un espacio entre los elementos */
+    /* background-color: transparent; */
+    /* border: none; */
+
+    width: 550px;
+    height: 55px;
+    /* padding: 8px; */
+    /* margin-bottom: 25px; */
+    /* margin-top: 3px; */
+    /* border: 1px solid #ccc; */
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 16px;
 }
 </style>
