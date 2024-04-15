@@ -30,6 +30,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../view/adminView/credentialsTableAdmin.vue'),
   },
   {
+    path: '/responsible',
+    name: 'responsible',
+    meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },
+
+    component: () => import('../view/adminView/responsible.vue'),
+  },
+  {
     path: '/edit/:id',
     name: 'editar',
     meta: { requiresAdmin: true, requiresAuth: true, showNavbar: true, role: 'ADMIN' },

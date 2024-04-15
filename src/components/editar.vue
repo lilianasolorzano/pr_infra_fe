@@ -1,12 +1,12 @@
 <template>
-    <h1>editar usuario normal</h1>
+    <h1>Editar usuario normal</h1>
     <div class="form-container">
         <form @submit.prevent="">
             <div>
                 <input-global title="" name="user" :value="userID.user"
-                    @update:value="newValue => updateI('user', newValue)" />
+                    @update:value="newValue => updateIUsers('user', newValue)" />
                 <input-global title="" name="email" :value="userID.email"
-                    @update:value="newValue => updateI('email', newValue)" />
+                    @update:value="newValue => updateIUsers('email', newValue)" />
                 <!-- <input-global title="" name="Agregar nueva contraseña" :type="showPassword ? 'text' : 'password'"
                     @update:value="newValue => updateI('password', newValue)">
                 </input-global> -->
@@ -41,7 +41,7 @@ Amplify.configure(amplifyConfig);
 
 // const showPassword = ref(false); // Estado para controlar la visibilidad de la contraseña
 
-// Función para alternar la visibilidad de la contraseña
+// // Función para alternar la visibilidad de la contraseña
 // const toggleShowPassword = () => {
 //     showPassword.value = !showPassword.value;
 // };
@@ -51,10 +51,10 @@ Amplify.configure(amplifyConfig);
 
 
 const props = defineProps(['id']);// Usuario seleccionado para edición
-const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '', });
+const userID = ref<IdUsuario>({ id: '', user: '', email: '', role: '' });
 const selectedOption = ref('select...');
 
-
+let roleUser;
 async function getLogin() {
     try {
         const getUser = await API.get({
@@ -75,6 +75,15 @@ async function getLogin() {
             console.log('idusers', userID.value)
             // dataStore.reset()
             dataStore.userEdit(userID.value)
+
+            roleUser = userID.value.role
+
+            if (typeof roleUser === 'string') { // Verifica que value sea de tipo string antes de asignarlo
+                selectedOption.value = roleUser; // Asigna el valor del rol del usuario a selectedOption
+            }
+
+            // console.log("rol del usuario", value)
+
         } else {
             console.log('sin respuesta')
         }
@@ -87,11 +96,12 @@ async function getLogin() {
 
     }
 };
-onMounted(getLogin)
 
-const saveJSON = async () => {
+
+
+const saveUsers = async () => {
     try {
-        const restOperation = API.put({
+        const restOperation = await API.put({
             apiName: "access_API",
             path: `/dev/users/update/${props.id}`,
             options: {
@@ -104,6 +114,10 @@ const saveJSON = async () => {
 
             }
         });
+
+        const role = selectedOption.value;
+        console.log("Rol asignado al usuario", role)
+
         const response = await restOperation.response;
         console.log('PUT call succeeded: ', response);
     } catch (error) {
@@ -111,24 +125,27 @@ const saveJSON = async () => {
     }
 };
 
-const updateI = (fielName: string, value: string) => {
+const updateIUsers = (fielName: string, value: string) => {
     userID.value = { ...userID.value, [fielName]: value }
     console.log('datos agregados', userID.value)
 }
 
 const addEdit = async (fielName: string, value: string) => {
-    updateI(fielName, value)
-    await saveJSON()
+    updateIUsers(fielName, value)
+    await saveUsers()
     router.push('/Users')
     dataStore.reset()
 }
 
+onMounted(getLogin)
 </script>
+
+
 
 <style scoped>
 form {
     border-radius: 13px;
-    width: 65%;
+    max-width: 100%;
     height: auto;
     padding: 20px;
     margin: 15px;
@@ -148,7 +165,28 @@ form:hover {
     align-items: center;
     justify-content: center;
     margin-top: 30px;
-    /* height: 100vh; */
-    /* Ajusta la altura del formulario al tamaño de la pantalla */
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.input-selected {
+    /* flex: 1; */
+    /* Toma todo el ancho disponible */
+    /* max-width: 650px; */
+    /* Ancho máximo del v-select */
+    /* margin-right: 10px; */
+    /* Añade un espacio entre los elementos */
+    /* background-color: transparent; */
+    /* border: none; */
+
+    width: 550px;
+    height: 55px;
+    /* padding: 8px; */
+    /* margin-bottom: 25px; */
+    /* margin-top: 3px; */
+    /* border: 1px solid #ccc; */
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 16px;
 }
 </style>

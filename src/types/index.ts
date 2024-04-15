@@ -59,3 +59,18 @@ export interface UserData {
         };
     };
 }
+
+export interface userResponsible {
+    data: {
+        id:number,
+        user: string,
+        credential: 
+        {
+            id:number,
+            iam_user_name: string,
+            status: string,
+            date_delete: string,
+        }
+    };
+    
+}

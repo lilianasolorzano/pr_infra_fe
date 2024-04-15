@@ -272,7 +272,7 @@ function AddnewUser() {
 
 
 
-<style>
+<style scoped>
 .styleBUser {
   background-color: #145474;
   font-size: 13px;

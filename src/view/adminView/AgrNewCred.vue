@@ -8,44 +8,48 @@
     <v-container class="d-flex align-center justify-center">
 
         <form @submit.prevent="AgrnewCredUserIAM">
-            <select v-model="selectedUserName" id="user" @change="filterAgrCredUser" class="input-select">
-                <option value="">Seleccione un usuario IAM...</option>
-                <option v-for="datos in userListRegIAM" :key="datos.UserName" :value="datos.UserName">{{
+            <div>
+                <div class="select-container">
+                    <select v-model="selectedUserName" id="user" @change="filterAgrCredUser" class="input-select">
+                        <option value="">Seleccione un usuario IAM...</option>
+                        <option v-for="datos in userListRegIAM" :key="datos.UserName" :value="datos.UserName">{{
         datos.UserName
     }}
-                </option>
-            </select>
-            <!-- Contenido del formulario para agregar la credencial -->
-            <input-global title="" name="Id de usuario " :value="registCredential.UserId"
-                @update:value="newValue => updateAgrCred('UserId', newValue)" :class-input="true" />
+                        </option>
+                    </select>
+                </div>
+                <!-- Contenido del formulario para agregar la credencial -->
+                <input-global title="" name="Id de usuario " :value="registCredential.UserId"
+                    @update:value="newValue => updateAgrCred('UserId', newValue)" style="pointer-events: none;" />
+
+                <input-global title="" name=" Llave de accesos IAM" :value="registCredential.accessKeyId"
+                    @update:value="newValue => updateAgrCred('accessKeyId', newValue)" style="pointer-events: none;" />
+
+                <input-global title="" name="Llave secreta" :value="registCredential.secretAccess"
+                    @update:value="newValue => updateAgrCred('secretAccess', newValue)" style="pointer-events: none;" />
+
+                <input-global title="" name="Fecha de expiracion" :value="registCredential.dateExpiration"
+                    @update:value="newValue => updateAgrCred('dateExpiration', newValue)"
+                    style="pointer-events: none;" />
 
 
-            <input-global title="" name=" Llave de accesos IAM" :value="registCredential.accessKeyId"
-                @update:value="newValue => updateAgrCred('accessKeyId', newValue)" :class-input="true" />
 
-            <input-global title="" name="Llave secreta" :value="registCredential.secretAccess"
-                @update:value="newValue => updateAgrCred('secretAccess', newValue)" :class-input="true" />
-
-            <input-global title="" name="Fecha de expiracion" :value="registCredential.dateExpiration"
-                @update:value="newValue => updateAgrCred('dateExpiration', newValue)" :class-input="true" />
-
-
-
-            <!-- asignacion de usuario para agregar sus credenciales  -->
-            <h2>¿Asignar a...?</h2>
-            <div>
-                <select v-model="selectedUserGuest" id="user" @change="filterUserGuest" class="input-select">
-                    <option value="">Seleccione un usuario...</option>
-                    <option v-for="dato in  userGuest" :key="dato.id" :value="dato.id">{{
-        dato.id
+                <!-- asignacion de usuario para agregar sus credenciales  -->
+                <h2>¿Asignar a...?</h2>
+                <div>
+                    <select v-model="selectedUserGuest" id="user" @change="filterUserGuest" class="input-select">
+                        <option value="">Seleccione un usuario...</option>
+                        <option v-for="dato in  userGuest" :key="dato.user" :value="dato.user">{{
+        dato.user
     }}
-                    </option>
-                </select>
-                <input-global title="" name="nombre de usuario" :value="registUser.user"
-                    @update:value="newValue => updateUserGuest('user', newValue)" />
-            </div>
-            <div>
-                <global-btn btn_global="Guardar" color="primary" @click="AgrCredential" buttonClass="styleBUser" />
+                        </option>
+                    </select>
+                    <input-global title="" name="id de usuario" :value="registUser.id"
+                        @update:value="newValue => updateUserGuest('id', newValue)" style="pointer-events: none;" />
+                </div>
+                <div>
+                    <global-btn btn_global="Guardar" color="primary" @click="AgrCredential" buttonClass="styleBUser" />
+                </div>
             </div>
         </form>
     </v-container>
@@ -217,10 +221,10 @@ const registUser = ref<IdUsuario>({
 
 // filtro de id de las credenciales creadas
 const filterUserGuest = () => {
-    const userGuestSelected = userGuest.value.find(user => user.id === selectedUserGuest.value);
+    const userGuestSelected = userGuest.value.find(user => user.user === selectedUserGuest.value);
     if (userGuestSelected) {
-        registUser.value.id = userGuestSelected.id;
         registUser.value.user = userGuestSelected.user;
+        registUser.value.id = userGuestSelected.id;
     }
 };
 const updateUserGuest = (fielName: string, value: string) => {
@@ -272,7 +276,7 @@ body {
 
 form {
     border-radius: 13px;
-    width: 65%;
+    min-width: 60%;
     height: auto;
     padding: 20px;
     margin: 15px;
@@ -306,17 +310,15 @@ form:hover {
     border-radius: 10px;
     height: 40px;
     width: 140px;
-    /* text-decoration: none; */
-    /* position: relative; */
-    /* margin-left: 5%; */
     margin-top: 5px;
     position: relative;
 
 }
 
 .input-select {
-    width: 500px;
-    height: 55px;
+    width: 100%;
+    /* width: 500px;
+    height: 55px; */
     padding: 8px;
     margin-bottom: 25px;
     margin-top: 20px;
@@ -330,4 +332,18 @@ form:hover {
     background-color: #fff;
     color: #145474;
 }
+
+
+
+
+/* clases de prueba  */
+
+.select-container {
+    flex: 1;
+    /* Toma el espacio restante disponible */
+}
+
+/* .input-select {
+    width: 100%;
+} */
 </style>
