@@ -42,7 +42,7 @@ async function getIAM() {
             usersIAMClient.value = data.data as unknown as IduserIAM[];
             console.log('iduser', usersIAMClient.value)
 
-            dataStore.clearUserIds();
+            dataStore.reset()
             usersIAMClient.value.forEach((IAM) => {
 
                 dataStore.userIAM(
@@ -51,7 +51,8 @@ async function getIAM() {
                     IAM.accessKeyId as (string),
                     IAM.CreateDate as (string),
                     IAM.Status as (string),
-                    IAM.ExpirationDate as (string),
+                    IAM.dateExpiration as (string),
+                    IAM.secretAcces as (string)
                 )
 
             });

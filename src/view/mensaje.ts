@@ -29,14 +29,14 @@ const tipoDeAlerta = ref<"success" | "error" | "warning" | "info" | undefined>("
 
 // const tipoDeAlerta = ref("success");  // Nuevo estado para manejar el tipo de alerta
 
-const mostrarMensajeTempralCredUserIAMs = (errorKey: keyof typeof errorMessages, tipo: 'success' | 'error' = 'success') => {
+const mostrarMensajeTempralCredUserIAMs = (errorKey: keyof typeof errorMessages, tipo: 'success' | 'error' | 'warning' = 'success') => {
      mensajeCredUserIAMs.value = errorMessages[errorKey];
      mostrarMensajeCredUserIAMs.value = true;
      tipoDeAlerta.value = tipo;  // Asignar el tipo de alerta basado en el parámetro
 
      setTimeout(() => {
           mostrarMensajeCredUserIAMs.value = false;
-     }, 6000);
+     }, 2000);
 };
 
 export default mostrarMensajeTempralCredUserIAMs

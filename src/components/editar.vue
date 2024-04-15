@@ -12,7 +12,7 @@
                 </input-global> -->
                 <!-- <v-icon @click="toggleShowPassword">{{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}</v-icon> -->
                 <div>
-                    <v-select title="" id="UserRol" :items="['admin', 'invitado']" v-model="selectedOption"
+                    <v-select title="" id="UserRol" :items="['ADMIN', 'INVITADO']" v-model="selectedOption"
                         style="width: 650px;" />
                 </div>
 

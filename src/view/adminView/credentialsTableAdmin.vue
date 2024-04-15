@@ -108,7 +108,7 @@ const getIAM = async () => {
       if (data !== null && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
          usersIAM.value = data.data as unknown as IduserIAM[];
 
-         // dataStore.reset();
+         dataStore.reset();
 
          usersIAM.value.forEach((IAM) => {
             dataStore.userIAM(
@@ -232,7 +232,6 @@ async function getUsersIAM() {
          userListWhitoutCred.value = data.data as unknown as userWithOutCredential[];
          // dataStore.clearUserIds();
          console.log('usuario sin crdencial', userListWhitoutCred.value)
-
          userListWhitoutCred.value.forEach((IAMcredential) => {
             dataStore.CreadwhitOutCredentialIAM(
                IAMcredential.UserId as string,
@@ -254,14 +253,27 @@ async function getUsersIAM() {
 };
 
 
+
 const fillCreatCred = () => {
    // dataStore.reset()
    const selectedUser = userListWhitoutCred.value.find(user => user.UserName === selectedUserName.value);
    if (selectedUser) {
       creatIAM.value.UserName = selectedUser.UserName;
-
+      // creatIAM.value.UserName = ''
    }
 };
+
+// Resetear el formulario y cualquier estado relacionado
+function resetDialogData() {
+   selectedUserName.value = '';
+   creatIAM.value.UserName = '';  // Asegúrate de limpiar también aquí si es necesario
+}
+
+const closeDialog = () => {
+   dialog2.value = false;
+   resetDialogData(); // Llama a reset aquí para asegurarte de que todo se limpia
+};
+
 
 
 // ---------------------------------------------------------------------------------------------------------------------------------//
@@ -281,10 +293,13 @@ const creatUserIAM = async () => {
 
       if (response.statusCode === 200) {
 
-
-         dialog2.value = false; // Cierra la ventana modal
+         // dataStore.reset()
+         const getUserIAMref = await getIAM()
          mostrarMensajeTempralCredUserIAMs('credential', 'success');
-
+         // dialog2.value = false; // Cierra la ventana modal
+         closeDialog()
+         // dataStore.reset()
+         return getUserIAMref
       }
 
    } catch (error) {
@@ -309,7 +324,9 @@ onMounted(() => {
 const CreateCredential = async (fielName: string, value: string) => {
    listenUserIAM(fielName, value)
    await creatUserIAM()
+   // const getUserRefIam = await getUsersIAM()
    router.push('/credentials')
+   // return getUserRefIam
 }
 
 function AddnewCredUserIAM() {

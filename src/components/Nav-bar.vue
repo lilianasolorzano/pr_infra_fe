@@ -2,10 +2,10 @@
   <nav class="styleNav" v-if="$route.meta.showNavbar">
     <h1 class="text">The Palace Company</h1>
     <div class="aling">
-      <div>
+      <div v-if="dataStore.role === 'ADMIN'">
         <router-link class=" styleLink" to="/Users">Users</router-link>
       </div>
-      <div>
+      <div v-if="dataStore.role === 'ADMIN'">
         <router-link class="styleLink" to="/Credentials">Credentials</router-link>
       </div>
       <globalBtn btn_global="Cerrar sesion" buttonClass="alingBtn" @click="logout" />
@@ -59,7 +59,7 @@ div:hover:after {
 } */
 
 .aling {
-  margin-left: 35%;
+  margin-left: 50%;
 }
 
 .alingBtn {

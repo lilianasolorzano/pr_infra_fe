@@ -9,9 +9,11 @@
 
         <form @submit.prevent="handleLogin" class="cristal">
             <h2>Bienvenido</h2>
-            <v-icon icon="mdi-account" color="#fff" size="30" class="icon" />
+            <!-- <div class="input-container"> -->
+            <v-icon icon="mdi-account" color="#fff" size="30" class="icon"></v-icon>
             <input-global title="" name="Nombre de usuario" v-model="loginDetails.user"
                 @update:value="newValue => updateI('user', newValue)" />
+            <!-- </div> -->
 
 
             <v-icon icon="mdi-lock" color="#fff" size="30" />
@@ -52,12 +54,12 @@ const router = useRouter()
 
 const handleLogin = async () => {
     const hashedPassword = bcrypt.hashSync('password', 10)
-    // console.log('hashedpassword', hashedPassword)
+    console.log('hashedpassword', hashedPassword)
     const passwordMatch = bcrypt.compareSync(loginDetails.value.password, hashedPassword)
-    // console.log('passwordMatch', passwordMatch)
+    console.log('passwordMatch', passwordMatch)
 
     const authenticated = false
-    // console.log('tratando de enviar a otra pagina', authenticated)
+    console.log('tratando de enviar a otra pagina', authenticated)
 
     let data: UserData | null = null;
 
@@ -142,7 +144,7 @@ const updateI = (fielName: string, value: string) => {
     height: 250px;
     /* max-width: 100%;
     max-height: 100%; */
-    margin-right: 50%;
+    /* margin-right: 50%; */
 }
 
 h2 {
@@ -184,7 +186,7 @@ form {
     border-radius: 10px;
     width: 500px;
     height: auto;
-    margin: 100px;
+    margin: 10px;
     padding: 70px;
     /* flex: 1; */
 }
@@ -225,7 +227,7 @@ form {
     border-left: 2px solid #ccc;
     height: 300px;
     /* Altura de la línea vertical */
-    margin: 0 100px;
+    margin: 0px 60px 0px 60px;
     /* Espacio entre la línea y los elementos */
 }
 
@@ -236,4 +238,35 @@ form {
 .global-btn ::btn_global {
     font-family: 'Courier New', Courier, monospace;
 }
+
+@media (max-width: 930px) {
+    .container {
+        flex-direction: column;
+        /* Cambia a columna en pantallas más pequeñas */
+    }
+
+    .img_palace {
+        max-width: 100%;
+        /* Ancho máximo completo en pantallas más pequeñas */
+        margin-right: 0;
+        /* Elimina el margen */
+        margin-bottom: 20px;
+        /* Espacio entre la imagen y el formulario */
+    }
+
+    .cristal {
+        max-width: 100%;
+        /* Ancho máximo completo en pantallas más pequeñas */
+    }
+}
+
+
+/* .input-container {
+    display: flex;
+    align-items: center;
+}
+
+.input-container .icon {
+    margin-right: 10px;
+} */
 </style>
